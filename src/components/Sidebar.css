@@ -1,0 +1,125 @@
+body {
+    width: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+   
+  }
+  
+  .sidebar {
+    width: 80px;
+    height: 100vh;
+    background-color: #031629;
+    border-right: 1px solid #e9ecef;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+    transition: width 0.3s ease;
+     
+    position: sticky;
+    top: 0;
+  }
+  
+  .sidebar.expanded {
+    width: 350px;
+  }
+  
+  .sidebar .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #e3aa00;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .sidebar .nav-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .sidebar .nav-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sidebar .nav-item i {
+    font-size: 1.5rem;
+    margin-right: 20px;
+    color: #e3aa00;
+  }
+  
+  .sidebar .nav-item span {
+    display: none;
+    font-size: 1rem;
+  }
+  
+  .sidebar.expanded .nav-item span {
+    display: inline;
+  }
+  
+  .sidebar .nav-item:hover {
+    background: rgb(131,58,180);
+    background: linear-gradient(93deg, rgba(131,58,180,1) 0%, rgba(0,0,0,1) 0%, rgba(255,45,38,1) 50%, rgba(0,0,0,1) 100%);
+  }
+  
+  .sidebar-footer {
+    margin-top: auto;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  .toggle-btn {
+    position: absolute;
+    top: 10px;
+    right: -15px;
+    background-color: #e40000;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  
+  .toggle-btn:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Media Queries for Responsiveness */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 0;
+    }
+  
+    .sidebar.expanded {
+      width: 240px;
+    }
+  
+    .sidebar .logo,
+    .sidebar .nav-links {
+      display: none;
+    }
+  
+    .sidebar.expanded .logo,
+    .sidebar.expanded .nav-links {
+      display: block;
+    }
+  
+    .toggle-btn {
+      display: block;
+    }
+  }
+  

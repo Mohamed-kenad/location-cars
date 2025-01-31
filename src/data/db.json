@@ -1,0 +1,134 @@
+{
+  "voitures": [
+    {
+      "id": "1",
+      "name": "Clio",
+      "matricule": "2023/A/30",
+      "modele": "2027"
+    },
+    {
+      "id": "2",
+      "name": "megane",
+      "matricule": "2024/B/45",
+      "modele": "2015"
+    },
+    {
+      "id": "3",
+      "name": "twingo",
+      "matricule": "2023/C/67",
+      "modele": "2018"
+    },
+    {
+      "id": "4",
+      "name": "captur",
+      "matricule": "2023/D/88",
+      "modele": "2020"
+    },
+    {
+      "id": "5",
+      "name": "laguna",
+      "matricule": "2023/E/12",
+      "modele": "2012"
+    },
+    {
+      "id": "6",
+      "name": "kadjar",
+      "matricule": "2024/F/20",
+      "modele": "2017"
+    },
+    {
+      "id": "7",
+      "name": "koleos",
+      "matricule": "2025/G/54",
+      "modele": "2019"
+    },
+    {
+      "id": "8",
+      "name": "dokker",
+      "matricule": "2023/H/98",
+      "modele": "2016"
+    },
+    {
+      "id": "9",
+      "name": "scenic",
+      "matricule": "2024/I/20",
+      "modele": "2014"
+    },
+    {
+      "id": "10",
+      "name": "zoe",
+      "matricule": "2023/J/11",
+      "modele": "2021"
+    },
+    {
+      "id": "11",
+      "name": "triber",
+      "matricule": "2025/K/355",
+      "modele": "2022"
+    },
+    {
+      "id": "0356",
+      "name": "bogato",
+      "matricule": "12/13/2006",
+      "modele": "2007"
+    }
+  ],
+  "client": [
+    {
+      "id": "3",
+      "firstName": "Johna",
+      "lastName": "Doe",
+      "email": "johndo@example.co",
+      "phone": "+123456789",
+      "address": "123 Main St, Cityville",
+      "voitureId": 1
+    },
+    {
+      "id": "2",
+      "firstName": "DD7",
+      "lastName": "Doe",
+      "email": "DD@example.com",
+      "phone": "+123456789",
+      "address": "123 Main St, Cityville",
+      "voitureId": 1
+    },
+    {
+      "id": "1",
+      "firstName": "minatoo",
+      "lastName": "Doe",
+      "email": "minato@example.co",
+      "phone": "+123456789",
+      "address": "123 Main St, Cityville",
+      "voitureId": 1
+    }
+  ],
+  "contrats": [
+    {
+      "id": "1",
+      "clientId": 1,
+      "voitureId": 1,
+      "contractDate": "2023-05-15",
+      "contractType": "Lease",
+      "durationMonths": 24,
+      "pricePerMonth": 150
+    },
+    {
+      "id": "2",
+      "clientId": 2,
+      "voitureId": 2,
+      "contractDate": "2024-01-10",
+      "contractType": "Purchase",
+      "durationMonths": 60,
+      "pricePerMonth": 200
+    },
+    {
+      "id": "3",
+      "clientId": 3,
+      "voitureId": 3,
+      "contractDate": "2023-07-22",
+      "contractType": "Lease",
+      "durationMonths": 36,
+      "pricePerMonth": 180
+    }
+  ]
+}
