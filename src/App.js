@@ -3,8 +3,9 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Contrats from "./pages/contrats/Contrats";
 import Clients from "./pages/clients/Clients";
-import Avoitures from "./Avoitures/Avoitures";
+import Avoitures from "./pages/Avoitures/Avoitures";
 import "./App.css";
+import Voitures from "./pages/voitures/Voitures";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
             <Route path="/Avoitures" element={<Avoitures />} />
             <Route path="/contrats/" element={<Contrats />} />
             <Route path="/clients" element={<Clients />} />
+            <Route path="/voitures" element={<Voitures />} />
           </Routes>
         </div>
       

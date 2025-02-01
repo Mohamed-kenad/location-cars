@@ -24,7 +24,7 @@ export default function Contrats() {
         document.getElementById("idv").textContent = voiture.id;
         document.getElementById("marq").textContent = voiture.name;
         document.getElementById("type").textContent = voiture.matricule;
-        document.getElementById("photo").src = `https://fakeimg.pl/300x200/?text=${voiture.name}&font=lobster`;
+        document.getElementById("photo").src = voiture.image;
       }
     } else if (type === "client") {
       document.getElementById("modalTitle").textContent = "Détails Client";

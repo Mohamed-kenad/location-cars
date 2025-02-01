@@ -12,29 +12,36 @@ export default function Avoitures() {
       .then(res => setVoitures(res.data))
   }, []);
 
-  const openAddModal = () => {
-    setSelectVoiture({});
-    setModalMode('add');
-    showModal();
-  };
+ 
 
-  const openEditModal = (idv) => {
-      
-      const data = voitures.find((v) => v.id === idv);
-    if (data) {
-        setSelectVoiture(data);
-        setModalMode('edit');
-        showModal();
-    }
+
+
+
+
+  
+  const deletev=(idv)=>{
+    axios.delete(`http://localhost:8080/voitures/${idv}`)
+    .then(()=>{
+      setVoitures((data) => data.filter((v) => v.id !== idv))
+    })
 
   };
 
-  const hideModal = () => {
-    setSelectVoiture({});
-    const modalElement = document.getElementById("voitureModal");
-      const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
-      modal.hide();
-  };
+
+  const openEditModal = (idv) => {     
+    const data = voitures.find((v) => v.id === idv);
+  if (data) {
+      setSelectVoiture(data);
+      setModalMode('edit');
+      showModal();
+  }
+};
+
+const openAddModal = () => {
+  setSelectVoiture([]);
+  setModalMode('add');
+  showModal();
+};
 
   const showModal = () => {
     const modalElement = document.getElementById("voitureModal");
@@ -45,7 +52,6 @@ export default function Avoitures() {
 
 
 
-  
 
   const handleSubmit = () => {
    
@@ -64,6 +70,27 @@ export default function Avoitures() {
     }
   };
 
+
+
+
+  const hideModal = () => {
+    const modalElement = document.getElementById("voitureModal");
+    if (modalElement) {
+      const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
+      modal.hide();
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectVoiture({ ...selectVoiture, image: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
 
   return (
@@ -90,7 +117,7 @@ export default function Avoitures() {
               </thead>
               <tbody>
                 {voitures.map((v) => (
-                  <Avoiture key={v.id} v={v} openEditModal={openEditModal} />
+                  <Avoiture key={v.id} v={v} openEditModal={openEditModal} deletev={deletev} />
                 ))}
               </tbody>
             </table>
@@ -110,11 +137,13 @@ export default function Avoitures() {
             </div>
             <div className="modal-body">
               <form>
+                {modalMode === "edit" && (
                   <div className="mb-3">
-                    <label className="form-label">Voiture ID</label>
-                    <input type="text" className="form-control" value={selectVoiture.id || ""} disabled />
-                  </div>
-                
+                  <label className="form-label">Voiture ID</label>
+                  <input type="text" className="form-control" value={selectVoiture.id || ""} disabled />
+                </div>
+
+                )}
                 <div className="mb-3">
                   <label className="form-label">Name</label>
                   <input type="text" className="form-control" name="name" value={selectVoiture.name || ""} onChange={(e) => setSelectVoiture({ 
@@ -138,7 +167,12 @@ export default function Avoitures() {
                 </div>
                 <div className="mb-3">
                   <label className="form-label">image</label>
-                  <input type="file" className="form-control" name="modele"  placeholder="Enter model" />
+                  <input type="file" onChange={handleImageChange} />
+                {selectVoiture.image && (
+                  <div>
+                    <img src={selectVoiture.image} alt="preview" width="100" />
+                  </div>
+                )}
                 </div>
               </form>
             </div>

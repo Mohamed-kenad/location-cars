@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
 
 function Voiture({voitures}) {
-    const imageUrl = `https://fakeimg.pl/300x200/?text=${voitures.name}&font=lobster`; 
   return (
     <div className="col">
     <div className="card h-100 shadow-sm hover-shadow transition">
       {/* Image container with fixed ratio */}
       <div className="position-relative" style={{ paddingBottom: "66.67%" }}>
         <img
-          src={imageUrl}
+          src={voitures.image}
           className="card-img-top position-absolute w-100 h-100 object-fit-cover"
           alt={voitures.name}
           style={{ top: 0, left: 0 }}
