@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Swal from "sweetalert2";
 import Avoiture from "./Avoiture";
 
 export default function Avoitures() {
@@ -11,23 +12,29 @@ export default function Avoitures() {
     axios.get("http://localhost:8080/voitures")
       .then(res => setVoitures(res.data))
   }, []);
-
- 
-
-
-
-
-
   
   const deletev=(idv)=>{
+    Swal.fire({
+      title: "Êtes-vous sûr ?",
+      text: "Cette action est irréversible !",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Oui, supprimer !"
+
+    }).then((result) => {
+      if (result.isConfirmed) {
+    
     axios.delete(`http://localhost:8080/voitures/${idv}`)
-    .then(()=>{
-      setVoitures((data) => data.filter((v) => v.id !== idv))
-    })
+    .then(() => { Swal.fire("Supprimé!", "Le contrat a été supprimé.", "success"); })
+    .then(()=>{  setVoitures((data) => data.filter((v) => v.id !== idv))  })
 
-  };
+    }})
+   } 
 
 
+    
   const openEditModal = (idv) => {     
     const data = voitures.find((v) => v.id === idv);
   if (data) {
@@ -51,26 +58,33 @@ const openAddModal = () => {
   };
 
 
-
-
   const handleSubmit = () => {
    
     if (modalMode === 'edit') {
       axios.put(`http://localhost:8080/voitures/${selectVoiture.id}`, selectVoiture)
-        .then((res) => {
-            setVoitures(prev => prev.map(v => v.id === selectVoiture.id ? res.data : v));
+        .then((res) => { setVoitures(prev => prev.map(v => v.id === selectVoiture.id ? res.data : v));
+            Swal.fire({
+              title: "Mis à jour!",
+              text: "Les informations de la voiture ont été modifiées avec succès.",
+              icon: "success",
+              confirmButtonText: "OK"
+            });
           hideModal();
         })
     } else {
       axios.post("http://localhost:8080/voitures", selectVoiture)
         .then((res) => {
           setVoitures([...voitures, res.data]);
+          Swal.fire({
+            title: "Ajouté!",
+            text: "La voiture a été ajoutée avec succès.",
+            icon: "success",
+            confirmButtonText: "OK"
+          });
           hideModal();
         })
     }
   };
-
-
 
 
   const hideModal = () => {
@@ -96,7 +110,7 @@ const openAddModal = () => {
   return (
     <div className="container-fluid p-4">
       <div className="card shadow">
-        <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <div className="card-header bg-warning text-white d-flex justify-content-between align-items-center">
           <h4 className="mb-0">Vehicle Management</h4>
           <button className="btn btn-light" onClick={openAddModal}>
             <i className="bi bi-plus-circle me-2"></i>Add Vehicle

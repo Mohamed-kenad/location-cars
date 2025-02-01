@@ -46,9 +46,7 @@ const Clients = () => {
     if (modalMode === 'edit') {
       axios.put(`http://localhost:8080/client/${selectedClient.id}`, selectedClient)
         .then((res) => {
-          setClients((data) => data.map((client) =>
-            client.id === selectedClient.id ? res.data : client
-          ));
+          setClients((data) => data.map((client) =>client.id === selectedClient.id ? res.data : client));
           hideModal();
         });
     } else {

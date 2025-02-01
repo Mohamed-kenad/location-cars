@@ -23,8 +23,8 @@ export default function Contrat({ c, open }) {
         </button>
       </td>
       <td className="align-middle">{c.contractDate}</td>
-      <td className="align-middle">{c.durationMonths} months</td>
-      <td className="align-middle">${c.pricePerMonth}/month</td>
+      <td className="align-middle">{c.durationMonths} jours</td>
+      <td className="align-middle">DH {c.pricePerMonth} / jour</td>
     </tr>
   );
 }

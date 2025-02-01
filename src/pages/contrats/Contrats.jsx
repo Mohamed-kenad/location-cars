@@ -6,35 +6,28 @@ export default function Contrats() {
   const [contrats, setContrats] = useState([]);
   const [voitures, setVoitures] = useState([]);
   const [clients, setClients] = useState([]);
+  const [idv ,setIdv]=useState("");
+  const [idc ,setIdc]=useState("");
 
   const open = (id, type) => {
     const modalElement = document.getElementById("exampleModal");
-    if (modalElement) {
+  
       const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
       modal.show();
-    }
+  
     document.getElementById("voitureInfo").style.display = "none";
     document.getElementById("clientInfo").style.display = "none";
 
     if (type === "voiture") {
+      setIdv(id)
       document.getElementById("modalTitle").textContent = "Détails Voiture";
       document.getElementById("voitureInfo").style.display = "block";
-      const voiture = voitures.find((v) => v.id == id);
-      if (voiture) {
-        document.getElementById("idv").textContent = voiture.id;
-        document.getElementById("marq").textContent = voiture.name;
-        document.getElementById("type").textContent = voiture.matricule;
-        document.getElementById("photo").src = voiture.image;
-      }
+ 
     } else if (type === "client") {
+      setIdc(id)
       document.getElementById("modalTitle").textContent = "Détails Client";
       document.getElementById("clientInfo").style.display = "block";
-      const client = clients.find((c) => c.id == id);
-      if (client) {
-        document.getElementById("clientId").textContent = client.id;
-        document.getElementById("clientName").textContent = client.firstName;
-        document.getElementById("clientEmail").textContent = client.email;
-      }
+
     }
   };
 
@@ -45,16 +38,16 @@ export default function Contrats() {
   }, []);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/voitures")
+    axios.get(`http://localhost:8080/voitures/${idv}`)
       .then(res => setVoitures(res.data))
       .catch(err => console.log(err));
-  }, []);
+  }, [idv]);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/client")
+    axios.get(`http://localhost:8080/client/${idc}`)
       .then(res => setClients(res.data))
       .catch(err => console.log(err));
-  }, []);
+  }, [idc]);
 
   return (
     <div className="container-fluid p-4">
@@ -96,20 +89,20 @@ export default function Contrats() {
               <div id="voitureInfo" style={{display: "none"}}>
                 <div className="card border-0">
                   <div className="mb-3">
-                    <p><strong>ID:</strong> <span id="idv" className="ms-2"></span></p>
-                    <p><strong>Marque:</strong> <span id="marq" className="ms-2"></span></p>
-                    <p><strong>Matricule:</strong> <span id="type" className="ms-2"></span></p>
+                    <p><strong>ID:</strong> <span id="idv" className="ms-2">{voitures.id}</span></p>
+                    <p><strong>Marque:</strong> <span id="marq" className="ms-2">{voitures.name}</span></p>
+                    <p><strong>Matricule:</strong> <span id="type" className="ms-2">{voitures.matricule}</span></p>
                   </div>
-                  <img id="photo" src="" alt="Photo voiture" className="img-fluid rounded shadow-sm" />
+                  <img id="photo" src={voitures.image} alt="voiture" className="img-fluid rounded shadow-sm" />
                 </div>
               </div>
 
               <div id="clientInfo" style={{display: "none"}}>
                 <div className="card border-0">
                   <div className="p-3">
-                    <p><strong>ID Client:</strong> <span id="clientId" className="ms-2"></span></p>
-                    <p><strong>Nom:</strong> <span id="clientName" className="ms-2"></span></p>
-                    <p><strong>Email:</strong> <span id="clientEmail" className="ms-2"></span></p>
+                    <p><strong>ID Client:</strong> <span id="clientId" className="ms-2">{clients.id}</span></p>
+                    <p><strong>Nom:</strong> <span id="clientName" className="ms-2">{clients.firstName}</span></p>
+                    <p><strong>Email:</strong> <span id="clientEmail" className="ms-2">{clients.email}</span></p>
                   </div>
                 </div>
               </div>
