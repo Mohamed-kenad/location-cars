@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Contrats from "./pages/contrats/Contrats";
+
 import Clients from "./pages/clients/Clients";
 import Avoitures from "./pages/Avoitures/Avoitures";
 import "./App.css";

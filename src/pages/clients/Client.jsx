@@ -6,10 +6,12 @@ const Client = ({ c, keey, deleteClient, open }) => {
       <td>{c.id}</td>
       <td>{c.firstName}</td>
       <td>{c.lastName}</td>
+      <td>{c.cin}</td>
+      <td>{c.permis}</td>
+      
       <td>{c.email}</td>
       <td>{c.phone}</td>
       <td>{c.address}</td>
-      <td>{c.voitureId}</td>
       <td>
         <div className="btn-group" role="group">
           <button 

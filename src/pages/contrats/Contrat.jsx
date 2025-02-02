@@ -22,9 +22,11 @@ export default function Contrat({ c, open }) {
           {c.voitureId}
         </button>
       </td>
-      <td className="align-middle">{c.contractDate}</td>
-      <td className="align-middle">{c.durationMonths} jours</td>
-      <td className="align-middle">DH {c.pricePerMonth} / jour</td>
+      <td className="align-middle">{c.datedebut}</td>
+      <td className="align-middle">{c.datefin} </td>
+      <td className="align-middle">{c.prix} DH / jour</td>
+      <td className="align-middle" >{c.total} DH</td>
+      
     </tr>
   );
 }
