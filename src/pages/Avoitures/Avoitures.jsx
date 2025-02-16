@@ -7,11 +7,12 @@ export default function Avoitures() {
   const [voitures, setVoitures] = useState([]);
   const [selectVoiture, setSelectVoiture] = useState({});
   const [modalMode, setModalMode] = useState("add");
+  const [filterAvailable, setFilterAvailable] = useState('all');
 
   useEffect(() => {
     axios.get("http://localhost:8080/voitures")
       .then(res => setVoitures(res.data))
-  }, []);
+  }, [voitures.disponible]);
   
   const deletev = (idv) => {
     Swal.fire({
@@ -91,31 +92,58 @@ export default function Avoitures() {
     }
   };
 
+  const filteredVoitures = voitures.filter((v) => 
+    filterAvailable === 'all' || (filterAvailable === 'Disponible' && v.disponible) || (filterAvailable === 'Non disponible' && !v.disponible)
+  );
+
   return (
-    <div className="container-fluid p-4">
-      <div className="card shadow">
-        <div className="card-header bg-warning text-white d-flex justify-content-between align-items-center">
-          <h4 className="mb-0">Gestion des Véhicules</h4>
-          <button className="btn btn-light" onClick={openAddModal}>
-            <i className="bi bi-plus-circle me-2"></i> Ajouter un véhicule
-          </button>
+    <div className="container-fluid min-vh-100 bg-light py-4">
+      {/* Professional Dashboard Header */}
+      <div className="row align-items-center bg-white shadow-sm rounded p-4 mb-4">
+        <div className="col-12 col-lg-6 mb-3 mb-lg-0">
+          <h2 className="h3 fw-bold text-primary mb-0">
+            <i className="bi bi-car-front me-2"></i>
+            Gestion des Véhicules
+          </h2>
         </div>
-        <div className="card-body">
+        <div className="col-12 col-lg-6">
+          <div className="d-flex flex-column flex-sm-row gap-2 justify-content-lg-end">
+            <select 
+              className="form-select form-select-sm" 
+              style={{ width: '200px' }}
+              value={filterAvailable} 
+              onChange={(e) => setFilterAvailable(e.target.value)}
+            >
+              <option value="all">Tous les véhicules</option>
+              <option value="Disponible">Disponible</option>
+              <option value="Non disponible">Non disponible</option>
+            </select>
+            <button className="btn btn-primary btn-sm d-flex align-items-center" onClick={openAddModal}>
+              <i className="bi bi-plus-circle me-2"></i>
+              Ajouter un véhicule
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Card */}
+      <div className="card border-0 shadow-sm">
+        <div className="card-body p-0">
           <div className="table-responsive">
-            <table className="table table-hover border">
-              <thead className="table-light">
-                <tr>
+            <table className="table table-hover align-middle mb-0">
+              <thead>
+                <tr className="bg-light text-center">
                   <th>ID</th>
-                  <th>Nom</th>
-                  <th>matricule</th>
-                  <th>Modèle</th>
                   <th>Image</th>
+                  <th>Nom</th>
+                  <th>Matricule</th>
+                  <th>Modele</th>
                   <th>Disponible</th>
-                  <th>Actions</th>
+                  <th>Actions </th>
                 </tr>
               </thead>
               <tbody>
-                {voitures.map((v) => (
+                {filteredVoitures.map((v) => (
                   <Avoiture key={v.id} v={v} openEditModal={openEditModal} deletev={deletev} />
                 ))}
               </tbody>
@@ -124,58 +152,100 @@ export default function Avoitures() {
         </div>
       </div>
 
-      <div id="voitureModal" className="modal fade" tabIndex="-1">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header bg-warning text-white">
-              <h5 className="modal-title">
+      {/* Responsive Modal */}
+      <div className="modal fade" id="voitureModal" tabIndex="-1">
+        <div className="modal-dialog modal-dialog-centered modal-lg">
+          <div className="modal-content border-0">
+            <div className="modal-header bg-warning bg-opacity-10 border-0">
+              <h5 className="modal-title fw-bold text-white">
+                <i className="bi bi-car-front me-2"></i>
                 {modalMode === 'edit' ? 'Modifier le véhicule' : 'Ajouter un véhicule'}
               </h5>
-              <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+              <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div className="modal-body">
-              <form>
-                {modalMode === "edit" && (
-                  <div className="mb-3">
-                    <label className="form-label">ID</label>
-                    <input type="text" className="form-control" value={selectVoiture.id || ""} disabled />
+            <div className="modal-body p-4">
+              <form className="needs-validation">
+                <div className="row g-3">
+                  {modalMode === "edit" && (
+                    <div className="col-12">
+                      <label className="form-label small text-muted fw-semibold">ID</label>
+                      <input type="text" className="form-control bg-light" value={selectVoiture.id || ""} disabled />
+                    </div>
+                  )}
+                  <div className="col-md-6">
+                    <label className="form-label small fw-semibold">Nom</label>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      placeholder="Entrez le nom"
+                      value={selectVoiture.name || ""} 
+                      onChange={(e) => setSelectVoiture({ ...selectVoiture, name: e.target.value })} 
+                    />
                   </div>
-                )}
-                <div className="mb-3">
-                  <label className="form-label">Nom</label>
-                  <input type="text" className="form-control" value={selectVoiture.name || ""} 
-                    onChange={(e) => setSelectVoiture({ ...selectVoiture, name: e.target.value })} />
+                  <div className="col-md-6">
+                    <label className="form-label small fw-semibold">Matricule</label>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      placeholder="Entrez le matricule"
+                      value={selectVoiture.matricule || ""} 
+                      onChange={(e) => setSelectVoiture({ ...selectVoiture, matricule: e.target.value })} 
+                    />
+                  </div>
+                  <div className="col-12">
+                    <label className="form-label small fw-semibold">Modèle</label>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      placeholder="Entrez le modèle"
+                      value={selectVoiture.modele || ""} 
+                      onChange={(e) => setSelectVoiture({ ...selectVoiture, modele: e.target.value })} 
+                    />
+                  </div>
+                  <div className="col-12">
+                    <label className="form-label small fw-semibold">Image</label>
+                    <input 
+                      type="file" 
+                      className="form-control" 
+                      onChange={handleImageChange} 
+                    />
+                    {selectVoiture.image && (
+                      <div className="mt-2">
+                        <img 
+                          src={selectVoiture.image} 
+                          alt="preview" 
+                          className="img-thumbnail" 
+                          style={{ height: '150px', objectFit: 'cover' }} 
+                        />
+                      </div>
+                    )}
+                  </div>
+                  {modalMode === "edit" && (
+                    <div className="col-12">
+                      <div className="form-check">
+                        <input 
+                          type="checkbox" 
+                          className="form-check-input"
+                          checked={selectVoiture.disponible} 
+                          onChange={(e) => setSelectVoiture({ ...selectVoiture, disponible: e.target.checked })}
+                          id="disponibleCheck"
+                        />
+                        <label className="form-check-label small fw-semibold" htmlFor="disponibleCheck">
+                          Disponible
+                        </label>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">matricule</label>
-                  <input type="text" className="form-control" value={selectVoiture.matricule || ""} 
-                    onChange={(e) => setSelectVoiture({ ...selectVoiture, matricule: e.target.value })} />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Modèle</label>
-                  <input type="text" className="form-control" value={selectVoiture.modele || ""} 
-                    onChange={(e) => setSelectVoiture({ ...selectVoiture, modele: e.target.value })} />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Image</label>
-                  <input type="file" onChange={handleImageChange} />
-                  {selectVoiture.image && <img src={selectVoiture.image} alt="preview" width="100" />}
-                </div>
-                  { modalMode === "edit" && (<div className="mb-3 form-check">
-                  <input 
-                    type="checkbox" 
-                    className="form-check-input"
-                    checked={selectVoiture.disponible} 
-                    onChange={(e) => setSelectVoiture({ ...selectVoiture, disponible: e.target.checked })}
-                  />
-                  <label className="form-check-label">Disponible</label>
-                </div>) }
-                
               </form>
             </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-              <button type="button" className="btn btn-primary" onClick={handleSubmit}>
+            <div className="modal-footer border-0 bg-light">
+              <button type="button" className="btn btn-light fw-semibold" data-bs-dismiss="modal">
+                <i className="bi bi-x-circle me-2"></i>
+                Annuler
+              </button>
+              <button type="button" className="btn btn-primary fw-semibold px-4" onClick={handleSubmit}>
+                <i className="bi bi-check2-circle me-2"></i>
                 {modalMode === 'edit' ? 'Sauvegarder' : 'Ajouter'}
               </button>
             </div>

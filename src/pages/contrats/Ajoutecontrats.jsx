@@ -42,11 +42,12 @@ export default function AjouterContrats({ voitures, c ,setContrats}) {
                   if (modalElement) {
                   const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
                   modal.hide();}
-                  navigate("/clients");
+                  navigate("/clients", { state: { showModal: true } });
                 }
             });
         }
     }, [error, navigate]);
+    
     
 
     const handleSubmit =  (e) => {
@@ -59,9 +60,8 @@ export default function AjouterContrats({ voitures, c ,setContrats}) {
             datefin: dateEnd,
             prix: prix,
             total: totalPrice,
-            
-
         };
+
 
         
         axios.post("http://localhost:8080/contrats", contractData)
@@ -192,7 +192,7 @@ export default function AjouterContrats({ voitures, c ,setContrats}) {
                     </div>
 
                     <div className="col-12">
-                        <label className="form-label fw-semibold">Price per Month</label>
+                        <label className="form-label fw-semibold">Prix par jour</label>
                         <div className="input-group input-group-sm">
                             <span className="input-group-text">$</span>
                             <input 

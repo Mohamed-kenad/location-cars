@@ -19,6 +19,10 @@ body {
     position: sticky;
     top: 0;
   }
+  .nav-item.active {
+    background-color: #000000;
+  }
+  
   
   .sidebar.expanded {
     width: 350px;

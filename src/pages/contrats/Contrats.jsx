@@ -9,41 +9,14 @@ export default function Contrats() {
   const [clients, setClients] = useState([]);
   const [voitureselect, setVoitureselect] = useState("");
   const [clientselect, setClientselect] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
 
   useEffect(() => {
     axios.get("http://localhost:8080/voitures/")
       .then(res => setVoitures(res.data))
       .catch(err => console.log(err));
   }, []);
-
-  const open = (id, type) => {
-    const modalElement = document.getElementById("exampleModal");
-    const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
-    modal.show();
-
-    document.getElementById("voitureInfo").style.display = "none";
-    document.getElementById("clientInfo").style.display = "none";
-    document.getElementById("ajouterContrat").style.display = "none";
-
-    if (type === "voiture") {
-      const data = voitures.find((v) => v.id == id)
-      setVoitureselect(data)
-      document.getElementById("modalTitle").textContent = "Détails Voiture";
-      document.getElementById("voitureInfo").style.display = "block";
-    }
-    if (type === "client") {
-      const val = clients.find((c) => c.id == id)
-      setClientselect(val)
-      document.getElementById("modalTitle").textContent = "Détails Client";
-      document.getElementById("clientInfo").style.display = "block";
-    }
-    if (type === "contrat") {
-      axios.get("http://localhost:8080/voitures")
-        .then(res => setVoitures(res.data))
-      document.getElementById("modalTitle").textContent = "Détails Client";
-      document.getElementById("ajouterContrat").style.display = "block";
-    }
-  };
 
   useEffect(() => {
     axios.get("http://localhost:8080/contrats")
@@ -57,79 +30,167 @@ export default function Contrats() {
       .catch(err => console.log(err));
   }, []);
 
+  const filteredContrats = contrats.filter((c) => {
+    const client = clients.find(client => client.id === c.clientId);
+    const voiture = voitures.find(voiture => voiture.id === c.voitureId);
+
+    const isMatchingSearchTerm = client?.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      voiture?.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const isActive = new Date(c.datefin) >= new Date();
+    const isExpired = new Date(c.datefin) < new Date();
+
+    if (filterStatus === "all") return isMatchingSearchTerm;
+    if (filterStatus === "active") return isMatchingSearchTerm && isActive;
+    if (filterStatus === "expired") return isMatchingSearchTerm && isExpired;
+    return false;
+  });
+
+  const open = (id, type) => {
+    const modalElement = document.getElementById("exampleModal");
+    const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
+    modal.show();
+
+    document.getElementById("voitureInfo").style.display = "none";
+    document.getElementById("clientInfo").style.display = "none";
+    document.getElementById("ajouterContrat").style.display = "none";
+
+    if (type === "voiture") {
+      const data = voitures.find((v) => v.id == id);
+      setVoitureselect(data);
+      document.getElementById("modalTitle").textContent = "Détails Voiture";
+      document.getElementById("voitureInfo").style.display = "block";
+    }
+    if (type === "client") {
+      const val = clients.find((c) => c.id == id);
+      setClientselect(val);
+      document.getElementById("modalTitle").textContent = "Détails Client";
+      document.getElementById("clientInfo").style.display = "block";
+    }
+    if (type === "contrat") {
+      axios.get("http://localhost:8080/voitures")
+        .then(res => setVoitures(res.data));
+      document.getElementById("modalTitle").textContent = "Détails contrat";
+      document.getElementById("ajouterContrat").style.display = "block";
+    }
+  };
+
   return (
-    <div className="container-fluid p-4">
-      <div className="card shadow">
-        <div className="card-header bg-warning text-white d-flex justify-content-between align-items-center">
-          <h4 className="mb-0">Gestion des Contrats</h4>
-          <button className="btn btn-light" onClick={() => open(null, "contrat")} >
-            <i className="bi bi-plus-circle me-2"></i>Add Contrats
-          </button>
-        </div>
-        <div className="card-body">
+    <div className="container-fluid min-vh-100 bg-light py-4">
+
+      {/* Professional Dashboard Header */}
+              <div className="row align-items-center bg-white shadow-sm rounded p-4 mb-4">
+                <div className="col-12 col-md-6 text-center text-md-start mb-3 mb-md-0">
+                  <h2 className="h3 fw-bold text-primary mb-0">
+                    <i className="bi bi-file-text me-2"></i>
+                    Gestion des Contrats
+                  </h2>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="d-flex flex-column flex-md-row gap-2 justify-content-md-end align-items-center">
+                    <div className="input-group w-100 w-md-auto">
+                      <span className="input-group-text bg-white border-end-0">
+                        <i className="bi bi-search text-muted"></i>
+                      </span>
+                      <input
+                        type="text"
+                        className="form-control border-start-0 ps-0"
+                        placeholder='Search a contract...'
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                    <select
+                      className="form-select form-select-sm w-100 w-md-auto"
+                      onChange={(e) => setFilterStatus(e.target.value)}
+                      value={filterStatus}
+                    >
+                      <option value="all">Tous les contrats</option>
+                      <option value="active">Actifs</option>
+                      <option value="expired">Expirés</option>
+                    </select>
+                    <button 
+                      className="btn btn-primary btn-sm d-flex align-items-center w-100 w-md-auto"
+                      onClick={() => open(null, "contrat")}
+                    >
+                      <i className="bi bi-plus-circle me-2"></i>
+                      Ajouter un contrat
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+
+      {/* Main Content Card */}
+      <div className="card border-0 shadow-sm">
+        <div className="card-body p-0">
           <div className="table-responsive">
-            <table className="table table-hover border">
-              <thead className="bg-light">
-                <tr>
-                  <th>Id Contrat</th>
-                  <th>ID Client</th>
-                  <th>ID Voiture</th>
+            <table className="table table-hover align-middle mb-0">
+            <thead className="bg-dark text-white text-center">
+                <tr className="bg-light text-center">
+                  <th>ID Contrat</th>
+                  <th>Client</th>
+                  <th>Voiture</th>
                   <th>Date Début</th>
-                  <th>Date Fin</th>
+                  <th>Date Fin </th>
                   <th>Prix / jour</th>
-                  <th>prix total</th>
+                  <th>Prix total</th>
+                  <th>Statut</th>
                 </tr>
               </thead>
               <tbody>
-                {contrats.map((c, i) =>
-                  <Contrat key={i} c={c} open={open} />
-                )}
+                {filteredContrats.map((c) => (
+                  <Contrat key={c.id} c={c} clients={clients} voitures={voitures} open={open} />
+                ))}
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
+
+
       <div id="exampleModal" className="modal fade" tabIndex="-1">
         <div className="modal-dialog modal-dialog-centered modal-lg">
-          <div className="modal-content">
-            <div className="modal-header bg-warning text-white">
+          <div className="modal-content border-0">
+            <div className="modal-header bg-warning bg-gradient text-white">
               <h5 className="modal-title" id="modalTitle">Détails</h5>
               <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div className="modal-body bg-light">
-                            
-                            {/* Vehicle Info Modal Content */}
+            <div className="modal-body bg-light p-4">
               <div id="voitureInfo" style={{ display: "none" }}>
-                <div className="card border-0">
+                <div className="card border-0 shadow-sm">
                   <div className="row g-0">
                     <div className="col-md-5">
-                      <img id="photo" src={voitureselect.image} alt="voiture" 
-                        className="img-fluid rounded-start" 
-                        style={{ objectFit: 'cover', height: '250px' }} />
+                      <img 
+                        id="photo" 
+                        src={voitureselect.image} 
+                        alt="voiture"
+                        className="img-fluid rounded-start h-100"
+                        style={{ objectFit: 'cover' }}
+                      />
                     </div>
                     <div className="col-md-7">
                       <div className="card-body">
-                        <h6 className="card-title mb-3">
-                          <i className="bi bi-car-front text-primary me-2"></i>
+                        <h6 className="card-title mb-4">
+                          <i className="bi bi-car-front text-warning me-2"></i>
                           Détails du Véhicule
                         </h6>
                         <div className="list-group list-group-flush">
                           <div className="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <small className="text-muted fs-6">ID</small>
-                            <span className="badge bg-light text-dark fs-6">{voitureselect.id}</span>
+                            <span className="text-muted">ID</span>
+                            <span className="badge bg-light text-dark">{voitureselect.id}</span>
                           </div>
                           <div className="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <small className="text-muted fs-6 ">Marque</small>
-                            <span className="badge bg-light text-dark fs-6">{voitureselect.name}</span>
+                            <span className="text-muted">Marque</span>
+                            <span className="badge bg-light text-dark">{voitureselect.name}</span>
                           </div>
                           <div className="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <small className="text-muted fs-6">Matricule</small>
-                            <span className="badge bg-light text-dark fs-6">{voitureselect.matricule}</span>
+                            <span className="text-muted">Matricule</span>
+                            <span className="badge bg-light text-dark">{voitureselect.matricule}</span>
                           </div>
                           <div className="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <small className="text-muted fs-6">modele</small>
-                            <span className="badge bg-light text-dark fs-6">{voitureselect.modele}</span>
+                            <span className="text-muted">Modèle</span>
+                            <span className="badge bg-light text-dark">{voitureselect.modele}</span>
                           </div>
                         </div>
                       </div>
@@ -138,57 +199,67 @@ export default function Contrats() {
                 </div>
               </div>
 
-                            {/* Client Info Modal Content */}
               <div id="clientInfo" style={{ display: "none" }}>
-                <div className="card border-0">
+                <div className="card border-0 shadow-sm">
                   <div className="card-body">
-                    <div className="d-flex align-items-center mb-3">
-                      <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
-                          style={{ width: '50px', height: '50px' }}>
-                        <i className="bi bi-person-fill" style={{ fontSize: '1.5rem' }}></i>
+                    <div className="d-flex align-items-center mb-4">
+                      <div className="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                           style={{ width: '60px', height: '60px' }}>
+                        <i className="bi bi-person-fill fs-4"></i>
                       </div>
                       <div>
-                        <h6 className="mb-0 text-dark fs-5">{clientselect.firstName} {clientselect.lastName}</h6>
+                        <h5 className="mb-1">{clientselect.firstName} {clientselect.lastName}</h5>
                         <small className="text-muted">Client ID: {clientselect.id}</small>
                       </div>
                     </div>
 
-                    <div className="row g-3">
+                    <div className="row g-4">
                       <div className="col-md-6">
-                        <div className="card border-0 bg-light">
-                          <div className="card-body p-3">
-                            <h6 className="card-subtitle mb-2 text-primary small">
-                              <i className="bi bi-person-vcard me-1"></i>Personnel
+                        <div className="card h-100 border-0 bg-white shadow-sm">
+                          <div className="card-body">
+                            <h6 className="text-warning mb-3">
+                              <i className="bi bi-person-vcard me-2"></i>
+                              Information Personnelle
                             </h6>
-                            <div className="mb-2">
-                              <small className="text-muted fs-5">CIN : </small>
-                              <span className="badge bg-light text-dark fs-5">{clientselect.cin}</span>
+                            <div className="mb-3">
+                              <small className="text-muted d-block mb-1">CIN</small>
+                              <span className="fw-medium">{clientselect.cin}</span>
                             </div>
                             <div>
-                              <small className="text-muted fs-5">permis : </small>
-                              <span className="badge bg-light text-dark fs-5" >{clientselect.permis}</span>
+                              <small className="text-muted d-block mb-1">Permis</small>
+                              <span className="fw-medium">{clientselect.permis}</span>
                             </div>
                           </div>
                         </div>
                       </div>
 
                       <div className="col-md-6">
-                        <div className="card border-0 bg-light">
-                          <div className="card-body p-3">
-                            <h6 className="card-subtitle mb-2 text-primary small">
-                              <i className="bi bi-info-circle me-1"></i>Contact
+                        <div className="card h-100 border-0 bg-white shadow-sm">
+                          <div className="card-body">
+                            <h6 className="text-warning mb-3">
+                              <i className="bi bi-info-circle me-2"></i>
+                              Contact
                             </h6>
-                            <div className="mb-2">
-                              <i className="bi bi-telephone-fill text-primary me-2 small"></i>
-                              <span className="small">{clientselect.phone}</span>
+                            <div className="mb-3">
+                              <small className="text-muted d-block mb-1">
+                                <i className="bi bi-telephone-fill me-2"></i>
+                                Téléphone
+                              </small>
+                              <span className="fw-medium">{clientselect.phone}</span>
                             </div>
-                            <div className="mb-2">
-                              <i className="bi bi-envelope-fill text-primary me-2 small"></i>
-                              <span className="small">{clientselect.email}</span>
+                            <div className="mb-3">
+                              <small className="text-muted d-block mb-1">
+                                <i className="bi bi-envelope-fill me-2"></i>
+                                Email
+                              </small>
+                              <span className="fw-medium">{clientselect.email}</span>
                             </div>
                             <div>
-                              <i className="bi bi-geo-alt-fill text-primary me-2 small"></i>
-                              <span className="small">{clientselect.address}</span>
+                              <small className="text-muted d-block mb-1">
+                                <i className="bi bi-geo-alt-fill me-2"></i>
+                                Adresse
+                              </small>
+                              <span className="fw-medium">{clientselect.address}</span>
                             </div>
                           </div>
                         </div>
@@ -198,14 +269,20 @@ export default function Contrats() {
                 </div>
               </div>
 
-
               <div id="ajouterContrat" style={{ display: "none" }}>
-                <Ajoutercontrats key={contrats.length} voitures={voitures} c={clients} setContrats={setContrats} />
+                <Ajoutercontrats 
+                  key={contrats.length} 
+                  voitures={voitures} 
+                  c={clients} 
+                  setContrats={setContrats} 
+                />
               </div>
             </div>
 
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            <div className="modal-footer bg-light">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                Fermer
+              </button>
             </div>
           </div>
         </div>

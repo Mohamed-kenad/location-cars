@@ -1,4 +1,9 @@
 .bg-warning {
     --bs-bg-opacity: 1;
     background-color: rgb(19 152 196) !important;
+
+}
+.bg-secondary{
+
+    background-color: rgb(229, 175, 38) !important;
 }

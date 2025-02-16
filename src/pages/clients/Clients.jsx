@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; 
 import axios from 'axios';
 import Client from './Client';
 
@@ -6,11 +7,22 @@ const Clients = () => {
   const [clients, setClients] = useState([]);
   const [selectedClient, setSelectedClient] = useState([]);
   const [modalMode, setModalMode] = useState('add');
+  const location = useLocation();
+  const { state } = location;
+
+  
 
   useEffect(() => {
     axios.get("http://localhost:8080/client")
       .then((res) => { setClients(res.data) });
   }, []);
+
+  useEffect(()=>{
+    if (state?.showModal) {
+      setModalMode('add');
+      showModal();
+    }
+  },[state])
 
   const deleteClient = (id) => {
     axios.delete(`http://localhost:8080/client/${id}`)
@@ -83,7 +95,7 @@ const Clients = () => {
         <div className="card-body p-0">
           <div className="table-responsive">
             <table className="table table-hover align-middle mb-0">
-              <thead className="bg-light">
+              <thead className="bg-dark">
                 <tr>
                   <th className="px-4 py-3">ID</th>
                   <th className="px-4 py-3">First Name</th>

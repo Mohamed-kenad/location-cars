@@ -1,15 +1,17 @@
-import React from 'react';
+import { useState ,useEffect} from 'react';
+import axios from 'axios';
 
 export default function Avoiture({ v ,openEditModal,deletev}) {
-  return (
-    <tr>
+
+ return (
+    <tr className="text-center">
       <td className="align-middle">{v.id}</td>
+      <td className="align-middle"><img src={v.image} alt="" width="70" height="50" className="rounded border"/></td>
       <td className="align-middle">{v.name}</td>
       <td className="align-middle">{v.matricule}</td>
       <td className="align-middle">{v.modele}</td>
-      <td className="align-middle"><img src={v.image} alt="" width="110" height="70" /></td>
       <td className="align-middle">
-        {v.disponible ? 
+        { v.disponible? 
           <span className="badge bg-success">Disponible</span> : 
           <span className="badge bg-danger">Non disponible</span>
           }

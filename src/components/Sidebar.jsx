@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./Sidebar.css";
-import { Link } from "react-router-dom";
 
 export default function Sidebar() {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
+  const location = useLocation();
 
   const toggleSidebar = () => {
     setSidebarExpanded(!sidebarExpanded);
@@ -19,26 +20,42 @@ export default function Sidebar() {
       <div className="logo">LV</div>
 
       <div className="nav-links">
-        <Link className="nav-item" title="dashboard" to="/">
+        <Link
+          className={`nav-item ${location.pathname === "/" ? "active" : ""}`}
+          title="dashboard"
+          to="/"
+        >
           <i className="bi bi-house-door-fill"></i>
           <span>dashboard</span>
         </Link>
-        <Link className="nav-item" title="Voitures" to="/Avoitures">
+        <Link
+          className={`nav-item ${location.pathname === "/Avoitures" ? "active" : ""}`}
+          title="Voitures"
+          to="/Avoitures"
+        >
           <i className="bi bi-car-front-fill"></i>
           <span>Voitures</span>
         </Link>
-        <Link className="nav-item" title="Contrats" to="/contrats">
+        <Link
+          className={`nav-item ${location.pathname === "/contrats" ? "active" : ""}`}
+          title="Contrats"
+          to="/contrats"
+        >
           <i className="bi bi-clipboard2-check-fill"></i>
           <span>Contrats</span>
         </Link>
-        <Link className="nav-item" title="Clients" to="/clients">
+        <Link
+          className={`nav-item ${location.pathname === "/clients" ? "active" : ""}`}
+          title="Clients"
+          to="/clients"
+        >
           <i className="bi bi-person-fill"></i>
           <span>Clients</span>
         </Link>
       </div>
 
       <div className="sidebar-footer">
-        <Link to="/Logout" className="nav-item">
+        <Link className={`nav-item ${location.pathname === "/Logout" ? "active" : ""}`} to="/Logout">
           <i className="bi bi-box-arrow-right"></i>
           <span>Logout</span>
         </Link>
@@ -46,5 +63,3 @@ export default function Sidebar() {
     </div>
   );
 }
-
-
