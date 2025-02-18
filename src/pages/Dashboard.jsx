@@ -2,9 +2,11 @@ import React from "react";
 import "../index.css";
 import { useState,useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import RentalDashboard from "./RentalDashboard";
 
 
-const DashboardCard = ({ icon, title, value, bgColor }) => (
+const DashboardCard = ({ icon, title, value, bgColor ,route}) => (
     <div className="col-12 col-md-6 col-lg-4 mb-4">
         <div className={`card h-100 text-white ${bgColor}`}>
             <div className="card-body">
@@ -15,9 +17,9 @@ const DashboardCard = ({ icon, title, value, bgColor }) => (
                     </div>
                     <i className={`bi bi-${icon} fs-4`} style={{ opacity: 0.7 }}></i>
                 </div>
-                <button className="btn btn-link text-white p-0 mt-3 text-decoration-none">
+                <Link className="btn btn-link text-white p-0 mt-3 text-decoration-none" to={route}>
                     More details
-                </button>
+                </Link>
             </div>
         </div>
     </div>
@@ -47,6 +49,11 @@ const Dashboard = () => {
     const [activeTab, setActiveTab] = React.useState('daily');
     const [voitures, setVoitures] = useState('');
     const [contrats, setContrats] = useState('');
+    const [dailyContracts, setDailyContracts] = useState(0);
+    const [dailyClients, setDailyClients] = useState(0);
+    const [revenue, setRevenue] = useState(0);
+    const [c, setC] = useState([]);
+
 
     useEffect(() => {
         axios.get("http://localhost:8080/voitures")
@@ -57,7 +64,17 @@ const Dashboard = () => {
             axios.get("http://localhost:8080/contrats")
             .then(res => {
                 const Active=res.data.filter((c)=>new Date(c.datefin) >= new Date()).length;
-                setContrats(Active)}
+                setC(res.data)
+                setContrats(Active)
+                const today = new Date().toISOString().split('T')[0]; 
+                const daily = res.data.filter(c => c.datedebut.startsWith(today));
+                const nbrc=daily.length
+                const uniqueClients = new Set(daily.map(c => c.clientId)).size;
+                const totalRevenue = daily.reduce((acc, contract) => { return acc + contract.total; }, 0);
+                setRevenue(totalRevenue);
+                setDailyContracts(nbrc);
+                setDailyClients(uniqueClients)
+            }
             )
     }, []); 
      
@@ -74,17 +91,21 @@ const Dashboard = () => {
                         title="Services"
                         value={contrats}
                         bgColor="bg-warning"
-                    />
+                        route={"/contrats"}
+                        />
+                       
+
                     <DashboardCard
                         icon="car-front"
                         title="Available Vehicles"
                         value={voitures}
                         bgColor="bg-success"
+                        route={"/Avoitures"}
                     />
                     <DashboardCard
                         icon="coin"
                         title="Expenses"
-                        value="$2,450"
+                        value="$0"
                         bgColor="bg-secondary"
                     />
                 </div>
@@ -112,29 +133,30 @@ const Dashboard = () => {
                     <StatCard
                         icon="file-text me-2"
                         label="Services"
-                        value="42"
+                        value={dailyContracts}
                     />
                     <StatCard
                         icon="currency-dollar"
                         label="Revenue"
-                        value="8,750"
+                        value={revenue}
                         suffix="DH"
                     />
                     <StatCard
                         icon="coin"
                         label="Expenses"
-                        value="2,450"
+                        value="0"
                         suffix="DH"
                     />
                     <StatCard
                         icon="people"
                         label="Total Customers"
-                        value="156"
+                        value={dailyClients}
                     />
                 </div>
 
                 {/* Bottom Action Cards */}
                 <div className="row g-3 mt-2">
+                <RentalDashboard c={c}/>
                     {[
                         { icon: 'archive', title: 'Expense Archive', value: '0 DH', color: 'text-info' },
                         { icon: 'currency-dollar', title: 'Revenue', value: '0 DH', color: 'text-danger' },

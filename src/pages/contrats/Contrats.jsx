@@ -16,19 +16,14 @@ export default function Contrats() {
     axios.get("http://localhost:8080/voitures/")
       .then(res => setVoitures(res.data))
       .catch(err => console.log(err));
-  }, []);
-
-  useEffect(() => {
-    axios.get("http://localhost:8080/contrats")
+      axios.get("http://localhost:8080/contrats")
       .then(res => setContrats(res.data))
       .catch(err => console.log(err));
-  }, []);
-
-  useEffect(() => {
-    axios.get("http://localhost:8080/client")
+      axios.get("http://localhost:8080/client")
       .then(res => setClients(res.data))
       .catch(err => console.log(err));
   }, []);
+
 
   const filteredContrats = contrats.filter((c) => {
     const client = clients.find(client => client.id === c.clientId);
@@ -56,24 +51,25 @@ export default function Contrats() {
     document.getElementById("ajouterContrat").style.display = "none";
 
     if (type === "voiture") {
-      const data = voitures.find((v) => v.id == id);
+      const data = voitures.find((v) => v.id === id);
       setVoitureselect(data);
       document.getElementById("modalTitle").textContent = "Détails Voiture";
       document.getElementById("voitureInfo").style.display = "block";
     }
     if (type === "client") {
-      const val = clients.find((c) => c.id == id);
+      const val = clients.find((c) => c.id === id);
       setClientselect(val);
       document.getElementById("modalTitle").textContent = "Détails Client";
       document.getElementById("clientInfo").style.display = "block";
     }
     if (type === "contrat") {
-      axios.get("http://localhost:8080/voitures")
-        .then(res => setVoitures(res.data));
-      document.getElementById("modalTitle").textContent = "Détails contrat";
+      document.getElementById("modalTitle").textContent = "Ajouter contrat";
       document.getElementById("ajouterContrat").style.display = "block";
     }
   };
+
+
+
 
   return (
     <div className="container-fluid min-vh-100 bg-light py-4">
@@ -89,13 +85,13 @@ export default function Contrats() {
                 <div className="col-12 col-md-6">
                   <div className="d-flex flex-column flex-md-row gap-2 justify-content-md-end align-items-center">
                     <div className="input-group w-100 w-md-auto">
-                      <span className="input-group-text bg-white border-end-0">
-                        <i className="bi bi-search text-muted"></i>
+                      <span className="input-group-text bg-primary border-end-0">
+                        <i className="bi bi-search text-white "></i>
                       </span>
                       <input
                         type="text"
                         className="form-control border-start-0 ps-0"
-                        placeholder='Search a contract...'
+                        placeholder='  Search...'
                         onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
@@ -124,7 +120,7 @@ export default function Contrats() {
       <div className="card border-0 shadow-sm">
         <div className="card-body p-0">
           <div className="table-responsive">
-            <table className="table table-hover align-middle mb-0">
+            <table className="table table-hover table-striped align-middle mb-0">
             <thead className="bg-dark text-white text-center">
                 <tr className="bg-light text-center">
                   <th>ID Contrat</th>
@@ -139,7 +135,7 @@ export default function Contrats() {
               </thead>
               <tbody>
                 {filteredContrats.map((c) => (
-                  <Contrat key={c.id} c={c} clients={clients} voitures={voitures} open={open} />
+                  <Contrat key={c.id} c={c} contrats={contrats} clients={clients} voitures={voitures} open={open} />
                 ))}
               </tbody>
             </table>

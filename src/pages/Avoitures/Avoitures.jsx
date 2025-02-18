@@ -12,7 +12,7 @@ export default function Avoitures() {
   useEffect(() => {
     axios.get("http://localhost:8080/voitures")
       .then(res => setVoitures(res.data))
-  }, [voitures.disponible]);
+  }, []);
   
   const deletev = (idv) => {
     Swal.fire({
@@ -130,7 +130,7 @@ export default function Avoitures() {
       <div className="card border-0 shadow-sm">
         <div className="card-body p-0">
           <div className="table-responsive">
-            <table className="table table-hover align-middle mb-0">
+            <table className="table table-hover table-striped align-middle mb-0">
               <thead>
                 <tr className="bg-light text-center">
                   <th>ID</th>

@@ -2,7 +2,7 @@ import React from 'react';
 
 const Client = ({ c, keey, deleteClient, open }) => {
   return (
-    <tr key={keey}>
+    <tr className='text-center' key={keey}>
       <td>{c.id}</td>
       <td>{c.firstName}</td>
       <td>{c.lastName}</td>

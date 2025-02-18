@@ -1,46 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-export default function Contrat({ c, clients, voitures, open }) {
-  const [status, setStatus] = useState('');
-  const [isAvailable, setIsAvailable] = useState(true);  
+  
+  export default function Contrat({ c, clients ,voitures,contrats, open }) {
+    const [status, setStatus] = useState('');
+    
+    const valClient = clients.find((client) => client.id === c.clientId);
+    const valVoiture = voitures.find((voiture) => voiture.id === c.voitureId);
 
-  const valClient = clients.find((client) => client.id === c.clientId);
-  const valVoiture = voitures.find((voiture) => voiture.id === c.voitureId);
-
-  useEffect(() => {
-
-    const now = new Date();  
-
-    const isActive = new Date(c.datefin) >= now;
-    setStatus(isActive ? '🟢 Actif' : '🔴 Expiré');
-
-   
-    if (isActive) {
-      setIsAvailable(false);
-    } else if (new Date(c.datefin) < now) {
-      setIsAvailable(true); 
-    }
-
-    const updateCarAvailability = async () => {
-      if (valVoiture) {
-          await axios.put(`http://localhost:8080/voitures/${valVoiture.id}`, {
-            ...valVoiture,
-            disponible: isAvailable, 
-          });
+    const isActive = (endDate) => new Date(endDate) >= new Date();
+  
+    useEffect(() => {
+      setStatus(isActive(c.datefin) ? '🟢 Actif' : '🔴 Expiré');
+    }, [c.datefin]);
+    
+    useEffect(() => {
+      if (voitures.length > 0 && contrats.length > 0) {
+        voitures.forEach((car) => {
+          const voitureContrats = contrats.filter((c) => c.voitureId === car.id);
+          const isAvailable = !voitureContrats.some(c => isActive(c.datefin))
+          if (isAvailable !== car.disponible){
+            const newCar = {...car , disponible: isAvailable}
+             axios.put(`http://localhost:8080/voitures/${newCar.id}`, newCar)
+          }
+        });
+      } else {
+        console.log("not found");
       }
-    };
-
-    updateCarAvailability();
-
-  }, [c.datefin, c.datedebut, valVoiture, isAvailable]); 
-
+    }, [voitures,contrats]);
+  
+   
+ 
 
   return (
     <tr className='text-center'>
       <td className="align-middle">{c.id}</td>
       <td className="align-middle">
-        <button 
+        <button
           className="btn btn-link text-primary p-0 text-decoration-none hover:text-primary-dark"
           onClick={() => open(c.clientId, 'client')}
         >
@@ -49,7 +45,7 @@ export default function Contrat({ c, clients, voitures, open }) {
         </button>
       </td>
       <td className="align-middle">
-        <button 
+        <button
           className="btn btn-link text-primary p-0 text-decoration-none hover:text-primary-dark"
           onClick={() => open(c.voitureId, 'voiture')}
         >
