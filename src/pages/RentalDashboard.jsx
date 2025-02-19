@@ -17,10 +17,12 @@ const RentalDashboard = ({ c }) => {
     const data = months.map((month) => ({ month, earnings: 0, bookings: 0 }));
 
     contracts.forEach((contract) => {
+      if (contract.statut === "confirmed") {
       const date = new Date(contract.datedebut);
       const monthIndex = date.getMonth();
       data[monthIndex].earnings += contract.total;
       data[monthIndex].bookings += 1;
+      }
     });
 
     return data;

@@ -16,12 +16,16 @@ export default function Contrats() {
     axios.get("http://localhost:8080/voitures/")
       .then(res => setVoitures(res.data))
       .catch(err => console.log(err));
-      axios.get("http://localhost:8080/contrats")
-      .then(res => setContrats(res.data))
-      .catch(err => console.log(err));
       axios.get("http://localhost:8080/client")
       .then(res => setClients(res.data))
       .catch(err => console.log(err));
+  }, []);
+  useEffect(() => {
+    axios.get("http://localhost:8080/contrats")
+      .then(res => {
+        const sortedContrats = res.data.sort((a, b) => new Date(b.datedebut) - new Date(a.datedebut));
+        setContrats(sortedContrats);
+      })
   }, []);
 
 
@@ -32,12 +36,16 @@ export default function Contrats() {
     const isMatchingSearchTerm = client?.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       voiture?.name.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const isActive = new Date(c.datefin) >= new Date();
-    const isExpired = new Date(c.datefin) < new Date();
+    const isActive = new Date(c.datefin) >= new Date() && c.statut === "confirmed";
+    const isExpired = new Date(c.datefin) < new Date() &&  c.statut === "confirmed";
+    const isPending=  c.statut === "pending" ;
+    const isCanceled=  c.statut === "canceled" ;
 
     if (filterStatus === "all") return isMatchingSearchTerm;
     if (filterStatus === "active") return isMatchingSearchTerm && isActive;
     if (filterStatus === "expired") return isMatchingSearchTerm && isExpired;
+    if (filterStatus === "pending") return isMatchingSearchTerm && isPending;
+    if (filterStatus === "canceled") return isMatchingSearchTerm && isCanceled;
     return false;
   });
 
@@ -101,8 +109,10 @@ export default function Contrats() {
                       value={filterStatus}
                     >
                       <option value="all">Tous les contrats</option>
-                      <option value="active">Actifs</option>
-                      <option value="expired">Expirés</option>
+                      <option value="active">Active</option>
+                      <option value="expired">Expired</option>
+                      <option value="pending">Pending</option>
+                      <option value="canceled">Canceled</option>
                     </select>
                     <button 
                       className="btn btn-primary btn-sm d-flex align-items-center w-100 w-md-auto"

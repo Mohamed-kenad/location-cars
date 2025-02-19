@@ -11,11 +11,10 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
             setStatusData([]);
             return;
           }
-      
-          const currentDate = new Date();
+  
           const total = c.length;
-          const hired = c.filter((contract) => new Date(contract.datefin) >= currentDate).length;
-          const pending = c.filter((contract) => !contract.datefin).length;
+          const hired = c.filter((contract) => contract.statut === "confirmed").length;
+          const pending = c.filter((contract) => contract.statut === "pending").length;
           const cancelled = total - hired - pending;
       
           const hiredPercent = total ? Math.round((hired / total) * 100) : 0;

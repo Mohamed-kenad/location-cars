@@ -63,11 +63,11 @@ const Dashboard = () => {
             })   
             axios.get("http://localhost:8080/contrats")
             .then(res => {
-                const Active=res.data.filter((c)=>new Date(c.datefin) >= new Date()).length;
+                const Active=res.data.filter((c)=> new Date(c.datefin) >= new Date() && c.statut === "confirmed").length;
                 setC(res.data)
                 setContrats(Active)
                 const today = new Date().toISOString().split('T')[0]; 
-                const daily = res.data.filter(c => c.datedebut.startsWith(today));
+                const daily = res.data.filter(c => c.datedebut.startsWith(today) && c.statut ==="confirmed" );
                 const nbrc=daily.length
                 const uniqueClients = new Set(daily.map(c => c.clientId)).size;
                 const totalRevenue = daily.reduce((acc, contract) => { return acc + contract.total; }, 0);

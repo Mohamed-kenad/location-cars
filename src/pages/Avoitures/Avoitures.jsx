@@ -11,8 +11,12 @@ export default function Avoitures() {
 
   useEffect(() => {
     axios.get("http://localhost:8080/voitures")
-      .then(res => setVoitures(res.data))
+      .then(res => {
+        const sortedVoitures = res.data.sort((a, b) => b.disponible - a.disponible);
+        setVoitures(sortedVoitures);
+      });
   }, []);
+  
   
   const deletev = (idv) => {
     Swal.fire({

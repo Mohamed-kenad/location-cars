@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios'; 
 import { Footer } from './Voitures';
+import Swal from 'sweetalert2';
 
 const BookingPage = () => {
   const navigate = useNavigate();
@@ -55,15 +56,13 @@ const BookingPage = () => {
         datefin: endDate,
         prix: car.price,
         total: totalPrice,
-        statut: "En attente",
+        statut: "pending",
       });
-
-      alert("تم تأكيد الحجز بنجاح!");
+      Swal.fire("Ajouté!", "Your reservation has been successfully confirmed!", "success");
       navigate("/contrats");
 
     } catch (error) {
       console.error("Error:", error);
-      alert("حدث خطأ أثناء الحجز!");
     }
   };
 

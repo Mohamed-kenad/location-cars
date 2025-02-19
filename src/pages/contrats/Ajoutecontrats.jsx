@@ -61,6 +61,7 @@ export default function AjouterContrats({ voitures, c ,setContrats}) {
             datefin: dateEnd,
             prix: prix,
             total: totalPrice,
+            statut: "confirmed"
         };
 
 
