@@ -3,6 +3,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import RentalStatus from "./Status";
 
 const RentalDashboard = ({ c }) => {
+
+  
   const [timeRange, setTimeRange] = useState("last8Month");
   const [monthlyData, setMonthlyData] = useState([]);
 

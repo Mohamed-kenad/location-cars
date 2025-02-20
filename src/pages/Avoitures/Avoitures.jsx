@@ -16,8 +16,7 @@ export default function Avoitures() {
         setVoitures(sortedVoitures);
       });
   }, []);
-  
-  
+
   const deletev = (idv) => {
     Swal.fire({
       title: "Êtes-vous sûr ?",
@@ -85,16 +84,27 @@ export default function Avoitures() {
     }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
     if (file) {
+      if (!file.type.startsWith('image/')) {
+        Swal.fire('Erreur', 'Le fichier doit être une image!', 'error');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        Swal.fire('Erreur', 'L\'image est trop grande! (Max: 5MB)', 'error');
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectVoiture({ ...selectVoiture, image: reader.result });
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file);  
     }
   };
+
+  
 
   const filteredVoitures = voitures.filter((v) => 
     filterAvailable === 'all' || (filterAvailable === 'Disponible' && v.disponible) || (filterAvailable === 'Non disponible' && !v.disponible)
@@ -102,7 +112,6 @@ export default function Avoitures() {
 
   return (
     <div className="container-fluid min-vh-100 bg-light py-4">
-      {/* Professional Dashboard Header */}
       <div className="row align-items-center bg-white shadow-sm rounded p-4 mb-4">
         <div className="col-12 col-lg-6 mb-3 mb-lg-0">
           <h2 className="h3 fw-bold text-primary mb-0">
@@ -130,14 +139,12 @@ export default function Avoitures() {
         </div>
       </div>
 
-      {/* Main Content Card */}
       <div className="card border-0 shadow-sm">
         <div className="card-body p-0">
           <div className="table-responsive">
             <table className="table table-hover table-striped align-middle mb-0">
               <thead>
                 <tr className="bg-light text-center">
-                  <th>ID</th>
                   <th>Image</th>
                   <th>Nom</th>
                   <th>Matricule</th>
@@ -156,11 +163,10 @@ export default function Avoitures() {
         </div>
       </div>
 
-      {/* Responsive Modal */}
       <div className="modal fade" id="voitureModal" tabIndex="-1">
         <div className="modal-dialog modal-dialog-centered modal-lg">
           <div className="modal-content border-0">
-            <div className="modal-header bg-warning bg-opacity-10 border-0">
+            <div className="modal-header bg-warning border-0">
               <h5 className="modal-title fw-bold text-white">
                 <i className="bi bi-car-front me-2"></i>
                 {modalMode === 'edit' ? 'Modifier le véhicule' : 'Ajouter un véhicule'}
@@ -206,12 +212,15 @@ export default function Avoitures() {
                       onChange={(e) => setSelectVoiture({ ...selectVoiture, modele: e.target.value })} 
                     />
                   </div>
+
+                 
                   <div className="col-12">
                     <label className="form-label small fw-semibold">Image</label>
                     <input 
                       type="file" 
                       className="form-control" 
-                      onChange={handleImageChange} 
+                      accept="image/*" 
+                      onChange={handleFileChange} 
                     />
                     {selectVoiture.image && (
                       <div className="mt-2">
@@ -224,22 +233,6 @@ export default function Avoitures() {
                       </div>
                     )}
                   </div>
-                  {modalMode === "edit" && (
-                    <div className="col-12">
-                      <div className="form-check">
-                        <input 
-                          type="checkbox" 
-                          className="form-check-input"
-                          checked={selectVoiture.disponible} 
-                          onChange={(e) => setSelectVoiture({ ...selectVoiture, disponible: e.target.checked })}
-                          id="disponibleCheck"
-                        />
-                        <label className="form-check-label small fw-semibold" htmlFor="disponibleCheck">
-                          Disponible
-                        </label>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </form>
             </div>

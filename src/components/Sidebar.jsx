@@ -1,15 +1,43 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./Sidebar.css";
+import Swal from "sweetalert2";
 
 export default function Sidebar() {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.user.user);
+  const isLoggedIn = !!user;
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out from your account.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, log me out!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch({ type: "LOGOUT" });
+        navigate("/");
+      }
+    });
+  };
 
   const toggleSidebar = () => {
     setSidebarExpanded(!sidebarExpanded);
+  };
+
+  const getNavLinkClass = (path) => {
+    return location.pathname === path ? "nav-item active" : "nav-item";
   };
 
   return (
@@ -17,45 +45,48 @@ export default function Sidebar() {
       <button className="toggle-btn" onClick={toggleSidebar}>
         <i className={`bi ${sidebarExpanded ? "bi-chevron-right" : "bi-chevron-left"}`}></i>
       </button>
-      <div className="logo">LV</div>
+      
+      { isLoggedIn && (
+       
+          <div className="text-center mb-4 profile-section">
+            <div className="profile-card  p-3 rounded">
+              <img
+                src={user.avatar }
+                alt="Admin"
+                className="profile-img rounded-circle mb-2 img-fluid"
+                width="100"
+                height="100"
+                />
+              <h6 className="mb-1 text-truncate">-------</h6>
+              <span className="badge bg-primary">{user.role}</span>
+            </div>
+          </div>
+               
+        )}
+
 
       <div className="nav-links">
-        <Link
-          className={`nav-item ${location.pathname === "/" ? "active" : ""}`}
-          title="dashboard"
-          to="/"
-        >
+        <Link className={getNavLinkClass("/dashboard")} to="/dashboard">
           <i className="bi bi-house-door-fill"></i>
-          <span>dashboard</span>
+          <span>Dashboard</span>
         </Link>
-        <Link
-          className={`nav-item ${location.pathname === "/Avoitures" ? "active" : ""}`}
-          title="Voitures"
-          to="/Avoitures"
-        >
+        <Link className={getNavLinkClass("/Avoitures")} to="/Avoitures">
           <i className="bi bi-car-front-fill"></i>
           <span>Voitures</span>
         </Link>
-        <Link
-          className={`nav-item ${location.pathname === "/contrats" ? "active" : ""}`}
-          title="Contrats"
-          to="/contrats"
-        >
+        <Link className={getNavLinkClass("/contrats")} to="/contrats">
           <i className="bi bi-clipboard2-check-fill"></i>
           <span>Contrats</span>
         </Link>
-        <Link
-          className={`nav-item ${location.pathname === "/clients" ? "active" : ""}`}
-          title="Clients"
-          to="/clients"
-        >
+        <Link className={getNavLinkClass("/clients")} to="/clients">
           <i className="bi bi-person-fill"></i>
           <span>Clients</span>
         </Link>
       </div>
 
+     
       <div className="sidebar-footer">
-        <Link className={`nav-item ${location.pathname === "/Logout" ? "active" : ""}`} to="/Logout">
+        <Link className="nav-item text-white" onClick={handleLogout}>
           <i className="bi bi-box-arrow-right"></i>
           <span>Logout</span>
         </Link>

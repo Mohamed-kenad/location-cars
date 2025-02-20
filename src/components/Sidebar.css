@@ -127,3 +127,60 @@ body {
     }
   }
   
+
+  /* Default state: Profile as image with details */
+.profile-section {
+  width: 100%;
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+
+
+.profile-card:hover {
+  background-color: #007bff; /* Change background on hover */
+}
+
+.profile-img {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%; /* Make image circular */
+  border: 3px solid #fff; /* Border around image */
+  transition: transform 0.3s ease-in-out; /* Smooth zoom effect */
+}
+
+.profile-img:hover {
+  transform: scale(1.1); /* Zoom effect on hover */
+}
+
+.profile-section .badge {
+  background-color: #007bff; /* Blue color for role badge */
+  padding: 10px 14px;
+    margin: -11px;
+  border-radius: 15px;
+}
+
+/* On small screens, hide the profile details and show only the icon/image */
+@media (max-width: 768px) {
+  .profile-section .text-truncate {
+    display: none; /* Hide email */
+  }
+
+  .profile-img {
+    width: 50px;
+    height: 50px; /* Smaller circle image */
+  }
+
+  
+
+  .profile-card .badge {
+    display: none; /* Hide the role badge on small screens */
+  }
+
+  /* Make sure the profile image is centered and responsive */
+  .profile-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

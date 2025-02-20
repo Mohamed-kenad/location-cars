@@ -3,7 +3,6 @@ export default function Avoiture({ v ,openEditModal,deletev}) {
 
  return (
     <tr className="text-center">
-      <td className="align-middle">{v.id}</td>
       <td className="align-middle"><img src={v.image} alt="" width="70" height="50" className="rounded border"/></td>
       <td className="align-middle">{v.name}</td>
       <td className="align-middle">{v.matricule}</td>

@@ -159,8 +159,8 @@ const Clients = () => {
               <tbody>
                 {filterClient.map((client) => (
                   <Client 
+                  key={client.id}
                     c={client} 
-                    keey={client.id} 
                     open={openEditModal} 
                     deleteClient={deleteClient}
                   />

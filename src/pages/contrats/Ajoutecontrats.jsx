@@ -154,7 +154,6 @@ export default function AjouterContrats({ voitures, c ,setContrats}) {
             {/* Contract Form */}
             <form onSubmit={handleSubmit} className="needs-validation" noValidate>
                 <div className="row g-3">
-                    {/* Vehicle Selection */}
                     <div className="col-12">
                         <label className="form-label fw-semibold">Vehicle</label>
                         <select 
@@ -213,7 +212,7 @@ export default function AjouterContrats({ voitures, c ,setContrats}) {
                     </div>
                 </div>
 
-                    {/* Submit Button */}
+                  
                     <div className="col-12">
                         <button 
                             type="submit" 

@@ -7,16 +7,30 @@ import { Link } from 'react-router-dom';
 const Voitures = () => {
   const [cars,setCars] = useState([]);
 
+  const sectionRefs = {
+    home: React.createRef(),
+    about: React.createRef(),
+    brands: React.createRef(),
+    contact: React.createRef(),
+  };
+
   useEffect(() => {
       axios.get("http://localhost:8080/voitures")
       .then(res => setCars(res.data))
   }, []);
+
+  const scrollToSection = (section) => {
+    sectionRefs[section].current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
   
   return (
     <>
-      <Navbar />
+      <Navbar scrollToSection={scrollToSection} />
       <div style={{ paddingTop: '76px' }}>
-        <section 
+        <section  id="home" ref={sectionRefs.home}
           style={{
             position: 'relative', 
             height: 'calc(100vh - 76px)',
@@ -74,7 +88,7 @@ const Voitures = () => {
 
         <section style={{ 
           padding: '50px 0',
-          background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)'
+          background: 'white'
         }}>
           <div className="row text-center g-4">
             <div className="col-md-3">
@@ -96,68 +110,8 @@ const Voitures = () => {
           </div>
         </section>
 
-        <section style={{ padding: '50px 0', background: 'white' }}>
-          <div className="row text-center g-4">
-            <div className="col-md-3">
-              <div style={{
-                width: '70px',
-                height: '70px',
-                background: 'linear-gradient(135deg, #00c2ff 0%, #0066ff 100%)',
-                borderRadius: '50%',
-                display: 'inline-flex',
-                margin: 'auto'
-              }}>
-                <i className="bi bi-search text-white fs-4 m-auto"></i>
-              </div>
-              <h5 className="mt-3" style={{ color: '#2c2c2c' }}>Browse Our Fleet</h5>
-              <p style={{ color: '#6c757d', fontSize: '0.9rem' }}>Lorem ipsum dolor sit amet</p>
-            </div>
-            <div className="col-md-3">
-              <div style={{
-                width: '70px',
-                height: '70px',
-                background: 'linear-gradient(135deg, #00c2ff 0%, #0066ff 100%)',
-                borderRadius: '50%',
-                display: 'inline-flex',
-                margin: 'auto'
-              }}>
-                <i className="bi bi-car-front text-white fs-4 m-auto"></i>
-              </div>
-              <h5 className="mt-3" style={{ color: '#2c2c2c' }}>Select Your Vehicle</h5>
-              <p style={{ color: '#6c757d', fontSize: '0.9rem' }}>Lorem ipsum dolor sit amet</p>
-            </div>
-            <div className="col-md-3">
-              <div style={{
-                width: '70px',
-                height: '70px',
-                background: 'linear-gradient(135deg, #00c2ff 0%, #0066ff 100%)',
-                borderRadius: '50%',
-                display: 'inline-flex',
-                margin: 'auto'
-              }}>
-                <i className="bi bi-file-text text-white fs-4 m-auto"></i>
-              </div>
-              <h5 className="mt-3" style={{ color: '#2c2c2c' }}>Submit an Enquiry</h5>
-              <p style={{ color: '#6c757d', fontSize: '0.9rem' }}>Lorem ipsum dolor sit amet</p>
-            </div>
-            <div className="col-md-3">
-              <div style={{
-                width: '70px',
-                height: '70px',
-                background: 'linear-gradient(135deg, #00c2ff 0%, #0066ff 100%)',
-                borderRadius: '50%',
-                display: 'inline-flex',
-                margin: 'auto'
-              }}>
-                <i className="bi bi-geo-alt text-white fs-4 m-auto"></i>
-              </div>
-              <h5 className="mt-3" style={{ color: '#2c2c2c' }}>Pick Up & Drive</h5>
-              <p style={{ color: '#6c757d', fontSize: '0.9rem' }}>Lorem ipsum dolor sit amet</p>
-            </div>
-          </div>
-        </section>
 
-        <section style={{ 
+        <section id="brands" ref={sectionRefs.brands} style={{ 
           padding: '50px 0',
           background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)'
         }}>
@@ -259,10 +213,77 @@ const Voitures = () => {
                 </div>
               ))}
 
-
             </div>
           </div>
         </section>
+
+        
+       
+
+        <section style={{ padding: '50px 0', background: 'white' }}>
+          <div className="row text-center g-4">
+            <div className="col-md-3">
+              <div style={{
+                width: '70px',
+                height: '70px',
+                background: 'linear-gradient(135deg, #00c2ff 0%, #0066ff 100%)',
+                borderRadius: '50%',
+                display: 'inline-flex',
+                margin: 'auto'
+              }}>
+                <i className="bi bi-search text-white fs-4 m-auto"></i>
+              </div>
+              <h5 className="mt-3" style={{ color: '#2c2c2c' }}>Browse Our Fleet</h5>
+              <p style={{ color: '#6c757d', fontSize: '0.9rem' }}>Lorem ipsum dolor sit amet</p>
+            </div>
+            <div className="col-md-3">
+              <div style={{
+                width: '70px',
+                height: '70px',
+                background: 'linear-gradient(135deg, #00c2ff 0%, #0066ff 100%)',
+                borderRadius: '50%',
+                display: 'inline-flex',
+                margin: 'auto'
+              }}>
+                <i className="bi bi-car-front text-white fs-4 m-auto"></i>
+              </div>
+              <h5 className="mt-3" style={{ color: '#2c2c2c' }}>Select Your Vehicle</h5>
+              <p style={{ color: '#6c757d', fontSize: '0.9rem' }}>Lorem ipsum dolor sit amet</p>
+            </div>
+            <div className="col-md-3">
+              <div style={{
+                width: '70px',
+                height: '70px',
+                background: 'linear-gradient(135deg, #00c2ff 0%, #0066ff 100%)',
+                borderRadius: '50%',
+                display: 'inline-flex',
+                margin: 'auto'
+              }}>
+                <i className="bi bi-file-text text-white fs-4 m-auto"></i>
+              </div>
+              <h5 className="mt-3" style={{ color: '#2c2c2c' }}>Submit an Enquiry</h5>
+              <p style={{ color: '#6c757d', fontSize: '0.9rem' }}>Lorem ipsum dolor sit amet</p>
+            </div>
+            <div className="col-md-3">
+              <div style={{
+                width: '70px',
+                height: '70px',
+                background: 'linear-gradient(135deg, #00c2ff 0%, #0066ff 100%)',
+                borderRadius: '50%',
+                display: 'inline-flex',
+                margin: 'auto'
+              }}>
+                <i className="bi bi-geo-alt text-white fs-4 m-auto"></i>
+              </div>
+              <h5 className="mt-3" style={{ color: '#2c2c2c' }}>Pick Up & Drive</h5>
+              <p style={{ color: '#6c757d', fontSize: '0.9rem' }}>Lorem ipsum dolor sit amet</p>
+            </div>
+          </div>
+        </section>
+
+
+
+
       <Footer/>
       </div>
     </>
@@ -271,54 +292,60 @@ const Voitures = () => {
 
 export default Voitures;
 
+
+
+
+
+
+
 export function Footer() {
   return (
     <footer className="bg-light py-5">
-      <div className="container d-inline">
-        <div className="row text-center text-md-start mx-auto">
+      <section className="container d-inline" id="about" >
+        <div className="row text-center text-md-start ms-5">
           {/* About Us */}
           <div className="col-md-4 mb-4 mb-md-0">
             <h5 className="text-primary fw-bold mb-3">About Us</h5>
             <p className="text-muted">
-              CarRental provides high-quality car rental services 
+              CarRental provides high-quality car rental services.
             </p>
           </div>
-          
-          {/* Quick Links */}
+
           <div className="col-md-4 mb-4 mb-md-0">
             <h5 className="text-primary fw-bold mb-3">Quick Links</h5>
             <ul className="list-unstyled">
               <li>
-                <a href="#" className="text-muted text-decoration-none hover-text-primary">
+                <a href="/terms" className="text-muted text-decoration-none">
                   Terms of Service
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted text-decoration-none hover-text-primary">
+                <a href="/privacy" className="text-muted text-decoration-none">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted text-decoration-none hover-text-primary">
+                <a href="/cancellation" className="text-muted text-decoration-none">
                   Cancellation Policy
                 </a>
               </li>
             </ul>
           </div>
-          
+
           {/* Contact Us */}
           <div className="col-md-4 mb-4 mb-md-0">
             <h5 className="text-primary fw-bold mb-3">Contact Us</h5>
-            <p className="text-muted mb-1">Email: support@carrental.com</p>
-            <p className="text-muted">Phone: +1 (555) 123-4567</p>
+            <p className="text-muted mb-1">Email: <a href="mailto:support@carrental.com" className="text-decoration-none">support@carrental.com</a></p>
+            <p className="text-muted">Phone: <a href="tel:+15551234567" className="text-decoration-none">+1 (555) 123-4567</a></p>
           </div>
         </div>
-        
+
         {/* Footer Bottom */}
         <div className="mt-5 pt-3 text-center border-top border-muted">
-          <p className="text-muted mb-0">&copy; 2023 CarRental. All rights reserved.</p>
+          <p className="text-muted mb-0">&copy; {new Date().getFullYear()} CarRental. All rights reserved.</p>
         </div>
-      </div>
+      </section>
     </footer>
   );
 }
+

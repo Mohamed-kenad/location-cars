@@ -32,7 +32,6 @@ const CarDetails = () => {
         </button>
 
         <div className="row g-4 mb-5">
-          {/* Car Image */}
           <div className="col-md-6">
             <img
               src={car.image}
@@ -47,7 +46,6 @@ const CarDetails = () => {
             />
           </div>
 
-          {/* Car Details */}
           <div className="col-md-6">
             <h1 className="text-primary fw-bold">{car.name}</h1>
             <p className="text-muted mb-4">{car.description}</p>
@@ -67,13 +65,12 @@ const CarDetails = () => {
               </li>
               <li className="list-group-item">
                 <i className="bi bi-fuel-pump me-2 text-primary"></i>
-                <strong>Fuel Type:</strong> {car.fuel}
+                <strong>Fuel Type:</strong> {car.fuelType}
               </li>
             </ul>
 
             <h3 className="text-success fw-bold mb-3">${car.price} / Day</h3>
 
-            {/* Rent Now Button */}
             <Link className="btn btn-lg btn-primary w-100 mt-3 rounded-pill shadow-sm" to="/rent" state={{ rent: car }} >
               <i className="bi bi-cart-check me-2"></i> Rent Now
             </Link>

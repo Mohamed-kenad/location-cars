@@ -92,17 +92,17 @@ export default function Contrats() {
                 </div>
                 <div className="col-12 col-md-6">
                   <div className="d-flex flex-column flex-md-row gap-2 justify-content-md-end align-items-center">
-                    <div className="input-group w-100 w-md-auto">
-                      <span className="input-group-text bg-primary border-end-0">
-                        <i className="bi bi-search text-white "></i>
-                      </span>
-                      <input
-                        type="text"
-                        className="form-control border-start-0 ps-0"
-                        placeholder='  Search...'
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                    </div>
+                  <div className="input-group w-100 w-md-auto">
+                    <span className="input-group-text bg-white border-end-0">
+                      <i className="bi bi-search text-muted"></i>
+                    </span>
+                    <input
+                      type="text"
+                      className="form-control border-start-0 "
+                      placeholder="Rechercher ..."
+                      onChange={(e)=>setSearchTerm(e.target.value)}
+                    />
+                  </div>
                     <select
                       className="form-select form-select-sm w-100 w-md-auto"
                       onChange={(e) => setFilterStatus(e.target.value)}
@@ -145,7 +145,7 @@ export default function Contrats() {
               </thead>
               <tbody>
                 {filteredContrats.map((c) => (
-                  <Contrat key={c.id} c={c} contrats={contrats} clients={clients} voitures={voitures} open={open} />
+                  <Contrat key={c.id} c={c} contrats={contrats} clients={clients} voitures={voitures} open={open} setContrats={setContrats} />
                 ))}
               </tbody>
             </table>

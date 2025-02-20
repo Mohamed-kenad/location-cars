@@ -1,121 +1,150 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import Swal from 'sweetalert2';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+  
+  const user = useSelector((state) => state.user.user);
+  const isLoggedIn = !!user;
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleScroll = () => {
-      const offset = window.scrollY;
-      if (offset > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    }
+      setScrolled(window.scrollY > 50);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    document.querySelectorAll('section').forEach((section) => {
+      observer.observe(section);
+    });
 
     window.addEventListener('scroll', handleScroll);
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
-    }
+      observer.disconnect();
+    };
   }, []);
 
-  return (
-    <nav 
-      className="navbar navbar-expand-lg container navbar-dark fixed-top p-3" 
-      style={{
-        borderRadius: "30px",
-        background: scrolled 
-          ? "linear-gradient(145deg, rgba(0, 194, 255, 0.95), rgba(0, 102, 255, 0.95))"
-          : "rgba(25, 25, 25, 0.8)",
-        backdropFilter: "blur(10px)",
-        boxShadow: scrolled 
-          ? "0 10px 30px rgba(0, 194, 255, 0.2)"
-          : "0 4px 20px rgba(0, 0, 0, 0.3)",
-        maxWidth: "1295px",
-        margin: "15px auto",
-        transition: "all 0.3s ease-in-out",
-      }}
-    >
-      <div className="container-fluid px-3 px-lg-5">
-        {/* Logo */}
-        <a 
-          className="navbar-brand d-flex align-items-center" 
-          href="/"
-          style={{
-            fontSize: "1.4rem",
-            letterSpacing: "1px"
-          }}
-        >
-          <i className="bi bi-geo-alt-fill me-2" style={{ 
-            color: scrolled ? "#ffffff" : "#00c2ff",
-            transition: "color 0.3s ease"
-          }}></i>
-          <span className="fw-bold">GEARSHIFT</span>
-        </a>
+  const scrollToSection = (id) => {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
-        {/* Mobile Toggle Button */}
-        <button 
-          className="navbar-toggler border-0" 
-          type="button" 
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out from your account.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, log me out!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch({ type: "LOGOUT" });
+      }
+    });
+  };
+
+  const navStyle = {
+    background: scrolled
+      ? "linear-gradient(145deg, rgba(0, 194, 255, 0.95), rgba(0, 102, 255, 0.95))"
+      : "rgba(25, 25, 25, 0.8)",
+    backdropFilter: "blur(10px)",
+    boxShadow: scrolled
+      ? "0 10px 30px rgba(0, 194, 255, 0.2)"
+      : "0 4px 20px rgba(0, 0, 0, 0.3)",
+  };
+
+  return (
+    <nav className="navbar navbar-expand-lg navbar-dark fixed-top container p-3 mt-3" 
+         style={{ ...navStyle, borderRadius: "30px" }}>
+      <div className="container-fluid px-lg-5">
+        <Link className="navbar-brand d-flex align-items-center" to="/">
+          <i className="bi bi-geo-alt-fill me-2" 
+             style={{ color: scrolled ? "#ffffff" : "#00c2ff" }}></i>
+          <span className="fw-bold fs-5">GEARSHIFT</span>
+        </Link>
+
+        <button
+          className="navbar-toggler border-0"
+          type="button"
           onClick={() => setIsOpen(!isOpen)}
-          aria-controls="navbarNav" 
-          aria-expanded="false" 
-          aria-label="Toggle navigation"
-          style={{
-            padding: "8px",
-            transition: "transform 0.3s ease"
-          }}
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Navigation Links */}
-        <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarNav">
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-            {[
-              { text: "HOME", href: "/", active: true },
-              { text: "ABOUT", href: "/about" },
-              { text: "CAR BRANDS", href: "/brands" },
-              { text: "CONTACT US", href: "/contact" }
-            ].map((item, index) => (
-              <li className="nav-item" key={index}>
-                <a 
-                  className={`nav-link ${item.active ? 'active' : ''}`} 
-                  href={item.href}
-                  style={{
-                    padding: "8px 20px",
-                    margin: "0 5px",
-                    fontSize: "0.9rem",
-                    letterSpacing: "1px",
-                    position: "relative",
-                    transition: "all 0.3s ease",
-                    opacity: item.active ? 1 : 0.8
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.opacity = "1";
-                    e.target.style.transform = "translateY(-1px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.opacity = item.active ? "1" : "0.8";
-                    e.target.style.transform = "translateY(0)";
+        <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`}>
+          <ul className="navbar-nav ms-auto align-items-lg-center">
+            {['home', 'about', 'brands'].map((section) => (
+              <li className="nav-item" key={section}>
+                <a
+                  className={`nav-link position-relative px-4 ${activeSection === section ? 'active' : ''}`}
+                  href={`#${section}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection(section);
                   }}
                 >
-                  {item.text}
-                  {item.active && (
-                    <span style={{
-                      position: "absolute",
-                      bottom: "0",
-                      left: "20px",
-                      right: "20px",
-                      height: "2px",
-                      background: scrolled ? "#ffffff" : "#00c2ff",
-                      transition: "background 0.3s ease"
-                    }}></span>
+                  <span className="text-uppercase small">{section}</span>
+                  {activeSection === section && (
+                    <span
+                      className="position-absolute"
+                      style={{
+                        bottom: "0",
+                        left: "20px",
+                        right: "20px",
+                        height: "2px",
+                        background: "#ffffff"
+                      }}
+                    ></span>
                   )}
                 </a>
               </li>
             ))}
+            <li className="nav-item ms-lg-3 d-flex align-items-center">
+              {isLoggedIn ? (
+                <>
+                  <div className="d-flex align-items-center">
+                    <button
+                      className="btn btn-outline-light rounded-pill px-3 me-4"
+                      onClick={handleLogout}
+                    >
+                      LOGOUT
+                    </button>
+                    <img
+                      src={user?.avatar || "https://via.placeholder.com/60"}
+                      alt="User Avatar"
+                      className="profile-img rounded-circle"
+                      width="20"
+                      height="20"
+                    />
+                  </div>
+                </>
+              ) : (
+                <Link
+                  to="/login"
+                  className="btn btn-outline-light rounded-pill px-4"
+                >
+                  LOGIN
+                </Link>
+              )}
+            </li>
           </ul>
         </div>
       </div>

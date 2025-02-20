@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-export default function Contrat({ c, clients, voitures, contrats, open }) {
+export default function Contrat({ c, clients, voitures, contrats, open,setContrats }) {
   const [status, setStatus] = useState("");  
 
   const valClient = clients.find((client) => client.id === c.clientId);
@@ -46,6 +46,9 @@ export default function Contrat({ c, clients, voitures, contrats, open }) {
           newStatus === "confirmed" ? "Confirmed" : "Canceled",
           `Contract has been ${newStatus === "confirmed" ? "confirmed" : "canceled"}!`
         );
+     setContrats(prevContrats =>
+       prevContrats.map(contract =>contract.id === contractId ? { ...contract, statut: newStatus } : contract)
+        );
       });
   };
 
@@ -75,7 +78,8 @@ export default function Contrat({ c, clients, voitures, contrats, open }) {
       <td className="align-middle">{c.prix} DH / day</td>
       <td className="align-middle">{c.total} DH</td>
       <td
-        className={`align-middle fw-bold ${status === "Active" ? "text-success" :
+        className={`align-middle fw-bold ${
+          status === "Active" ? "text-success" :
           status === "Canceled" ? "text-danger" :
           status === "Pending" ? "text-warning" : "text-muted"
         }`}
@@ -88,7 +92,7 @@ export default function Contrat({ c, clients, voitures, contrats, open }) {
       <td className="align-middle">
         {c.statut === "pending" && (
           <>
-            <button onClick={() => updateContractStatus(c.id, "confirmed")} className="btn btn-success btn-sm me-2">Confirm</button>
+            <button onClick={() => updateContractStatus(c.id, "confirmed")} className="btn btn-success btn-sm me-2">signée</button>
             <button onClick={() => updateContractStatus(c.id, "canceled")} className="btn btn-danger btn-sm">Cancel</button>
           </>
         )}

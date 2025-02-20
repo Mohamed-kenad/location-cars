@@ -11,20 +11,23 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
             setStatusData([]);
             return;
           }
-  
+        
           const total = c.length;
-          const hired = c.filter((contract) => contract.statut === "confirmed").length;
-          const pending = c.filter((contract) => contract.statut === "pending").length;
-          const cancelled = total - hired - pending;
-      
+          const hired = c.filter((contract) =>new Date(contract.datefin) >= new Date() && contract.statut === "confirmed").length;
+          const pending = c.filter((contract) =>new Date(contract.datefin) >= new Date() && contract.statut === "pending").length;
+          const cancelled = c.filter((contract) =>new Date(contract.datefin) >= new Date() && contract.statut === "canceled").length;
+          const expired = c.filter((contract) =>new Date(contract.datefin) < new Date() && contract.statut === "confirmed").length;
+        
           const hiredPercent = total ? Math.round((hired / total) * 100) : 0;
           const pendingPercent = total ? Math.round((pending / total) * 100) : 0;
           const cancelledPercent = total ? Math.round((cancelled / total) * 100) : 0;
-      
+          const expiredPercent = total ? Math.round((expired / total) * 100) : 0;
+        
           setStatusData([
-            { name: "Hired", value: hiredPercent, color: "#1a365d" },
+            { name: "Active", value: hiredPercent, color: "#1a365d" },
             { name: "Pending", value: pendingPercent, color: "#ef4444" },
-            { name: "Cancelled", value: cancelledPercent, color: "#e5e7eb" },
+            { name: "Canceled", value: cancelledPercent, color: "#e5e7eb" },
+            { name: "Expired", value: expiredPercent, color: "#9ca3af" },
           ]);
         }, [c]);
       

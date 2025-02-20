@@ -154,7 +154,7 @@ const Dashboard = () => {
                     />
                 </div>
 
-                {/* Bottom Action Cards */}
+
                 <div className="row g-3 mt-2">
                 <RentalDashboard c={c}/>
                     {[
