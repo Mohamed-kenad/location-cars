@@ -8,6 +8,8 @@
     background-color: rgb(229, 175, 38) !important;
 }
 
-
+.carousel-inner .carousel-item {
+    transition: transform 1.5s ease-in-out;
+  }
 
   

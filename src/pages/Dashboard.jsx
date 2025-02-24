@@ -88,7 +88,7 @@ const Dashboard = () => {
                 <div className="row g-3">
                     <DashboardCard
                         icon="file-text me-2" 
-                        title="Services"
+                        title="Contracts"
                         value={contrats}
                         bgColor="bg-warning"
                         route={"/contrats"}

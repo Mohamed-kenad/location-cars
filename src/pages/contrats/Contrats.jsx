@@ -79,6 +79,8 @@ export default function Contrats() {
 
 
 
+
+
   return (
     <div className="container-fluid min-vh-100 bg-light py-4">
 
@@ -111,8 +113,10 @@ export default function Contrats() {
                       <option value="all">Tous les contrats</option>
                       <option value="active">Active</option>
                       <option value="expired">Expired</option>
+                               
                       <option value="pending">Pending</option>
                       <option value="canceled">Canceled</option>
+  
                     </select>
                     <button 
                       className="btn btn-primary btn-sm d-flex align-items-center w-100 w-md-auto"
@@ -145,7 +149,7 @@ export default function Contrats() {
               </thead>
               <tbody>
                 {filteredContrats.map((c) => (
-                  <Contrat key={c.id} c={c} contrats={contrats} clients={clients} voitures={voitures} open={open} setContrats={setContrats} />
+                  <Contrat key={c.id} c={c} contrats={contrats} clients={clients} voitures={voitures} open={open} setContrats={setContrats}  />
                 ))}
               </tbody>
             </table>

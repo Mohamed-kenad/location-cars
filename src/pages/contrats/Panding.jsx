@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useLocation } from "react-router-dom";
 
-export default function Contrat({ c, clients, voitures, contrats, open,setContrats }) {
-  const [status, setStatus] = useState(""); 
-  const [selectedMonth, setSelectedMonth] = useState(""); 
-  const location = useLocation();
-  
+export default function Panding({ c, clients, voitures, contrats, open,setContrats }) {
+  const [status, setStatus] = useState("");  
+
   const valClient = clients.find((client) => client.id === c.clientId);
   const valVoiture = voitures.find((voiture) => voiture.id === c.voitureId);
 
@@ -55,38 +52,7 @@ export default function Contrat({ c, clients, voitures, contrats, open,setContra
       });
   };
 
-  
-  useEffect(() => {
-    if (location.state?.selectedMonth) {
-
-      setSelectedMonth(location.state.selectedMonth);
-    }
-  }, [location.state]); 
-
-
-  const navigateFromDashboard = location.state?.fromRentalDashboard;
-
-
-  if (navigateFromDashboard && (c.statut === "pending" || c.statut === "canceled")) {
-    return null;
-  }
-  
-  const getContractMonth = (date) => {
-    if (!date) return null; 
-    const contractDate = new Date(date);
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return months[contractDate.getMonth()];
-  };
-
-  const filterByMonth = selectedMonth 
-  ? getContractMonth(c.datedebut) === selectedMonth 
-  : true;
-
-
-
   return (
-    <>
-    {filterByMonth && (
     <tr className="text-center">
       <td className="align-middle">{c.id}</td>
       <td className="align-middle">
@@ -132,9 +98,5 @@ export default function Contrat({ c, clients, voitures, contrats, open,setContra
         )}
       </td>
     </tr>
-  )}
-  </>
-    
   );
-
 }

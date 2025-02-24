@@ -12,16 +12,27 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await axios.get("http://localhost:8080/users");
       const users = response.data;
       const loggedInUser = users.find((user) => user.email === email && user.password === password);
-
+  
       if (loggedInUser) {
-        dispatch({ type: "LOGIN", payload: loggedInUser });
-        localStorage.setItem("user", JSON.stringify(loggedInUser)); 
-
+        const userData = {
+          id: loggedInUser.id,
+          firstName: loggedInUser.firstName,
+          lastName: loggedInUser.lastName,
+          email: loggedInUser.email,
+          phone: loggedInUser.phone,
+          address: loggedInUser.address,
+          role: loggedInUser.role,
+          avatar:loggedInUser.avatar
+        };
+  
+        dispatch({ type: "LOGIN", payload: userData });
+        localStorage.setItem("user", JSON.stringify(userData)); 
+  
         Swal.fire({
           title: "Login Successful",
           text: "Welcome back!",
@@ -29,7 +40,7 @@ function Login() {
           timer: 2000,
           showConfirmButton: false,
         });
-
+  
         navigate("/dashboard");
       } else {
         Swal.fire({

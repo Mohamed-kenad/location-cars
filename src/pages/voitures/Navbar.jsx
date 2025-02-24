@@ -1,15 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [contrats,setCantrats]=useState([]);
   
   const user = useSelector((state) => state.user.user);
   const isLoggedIn = !!user;
+
+  const clientId=user?.id;
+  
+ useEffect(()=>{
+
+
+  axios.get(`http://localhost:8080/contrats`)
+  .then((res)=>setCantrats(res.data));
+
+}
+,[clientId])
+
+const today = new Date();
+const confiClient = contrats?.filter((c) => c.clientId === clientId &&["pending", "confirmed", "canceled"].includes(c.statut) &&
+  new Date(c.datefin) >= today).length || 0;
+  
+
 
   const dispatch = useDispatch();
 
@@ -127,13 +148,24 @@ const Navbar = () => {
                     >
                       LOGOUT
                     </button>
+                    <Link to="/tracking" className='me-4 '>
+                    <i className="bi bi-bell-fill fs-3  text-white">
+                      {confiClient>0 &&(
+                        <>
+                      <strong className="badge bg-danger position-absolute translate-middle rounded-circle ">{confiClient}</strong>
+                        </>
+                      )}
+                    </i>
+                  </Link>
+                    <Link to="/profile">
                     <img
                       src={user?.avatar || "https://via.placeholder.com/60"}
                       alt="User Avatar"
                       className="profile-img rounded-circle"
                       width="20"
                       height="20"
-                    />
+                      />
+                      </Link>
                   </div>
                 </>
               ) : (

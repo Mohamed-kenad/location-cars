@@ -1,16 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./Sidebar.css";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 export default function Sidebar() {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
+  const [num, setNum] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
+  useEffect(()=>{
+    
+     axios.get("http://localhost:8080/contrats?statut=pending")
+     .then((res)=>setNum(res.data.length) )
+  },[])
+
 
   const user = useSelector((state) => state.user.user);
   const isLoggedIn = !!user;
@@ -75,7 +84,9 @@ export default function Sidebar() {
           <span>Voitures</span>
         </Link>
         <Link className={getNavLinkClass("/contrats")} to="/contrats">
-          <i className="bi bi-clipboard2-check-fill"></i>
+          <i className="bi bi-clipboard2-check-fill">
+          {num!==0?<strong className="badge bg-danger position-absolute translate-middle rounded-circle">{num}</strong>:""}
+          </i>
           <span>Contrats</span>
         </Link>
         <Link className={getNavLinkClass("/clients")} to="/clients">

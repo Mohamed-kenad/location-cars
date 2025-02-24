@@ -10,6 +10,9 @@ import CarDetails from "./pages/voitures/ShowVoiture";
 import BookingPage from "./pages/voitures/Rent";
 import Login from "./context/auth/Login";
 import store from "./redux/store";
+import Register from "./context/auth/Register";
+import Profile from "./context/auth/Profile";
+import TrackingPage from "./pages/voitures/TrackingPage";
 
 export default function App() {
   return (
@@ -36,6 +39,9 @@ function MainApp() {
           <Route path="/car/:id" element={<CarDetails />} />
           <Route path="/rent" element={<BookingPage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/tracking" element={<TrackingPage/>}/>
 
           {user?.role === "admin" ? (
             <>

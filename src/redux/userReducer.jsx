@@ -11,6 +11,11 @@ const initialState = {
       case "LOGOUT":
         localStorage.removeItem("user");
         return { ...state, user: null };
+
+        case "UPDATE_USER":
+          const updatedUser = { ...state.user, ...action.payload };
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          return { ...state, user: updatedUser };
   
       default:
         return state;

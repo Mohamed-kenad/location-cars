@@ -120,7 +120,7 @@ const Voitures = () => {
               <h2 style={{ color: '#2c2c2c' }}>Featured Cars</h2>
               <button className="btn btn-outline-primary mb-4" > Show All <i className="bi bi-arrow-right"></i></button>
             </div>
-            <div className="row g-4">
+            <div className="row g-4 p-3">
 
 
              {cars.map(car => (
@@ -145,13 +145,13 @@ const Voitures = () => {
                         position: 'absolute',
                         top: '12px',
                         left: '12px',
-                        background: 'linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%)',
+                        background: car.disponible ? 'linear-gradient(135deg, #28a745 0%, #218838 100%)' : 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
                         color: 'white',
                         padding: '5px 15px',
                         borderRadius: '20px',
                         fontSize: '0.9rem'
                       }}>
-                        {car.modele || ""}
+                        {(car.disponible?"disponible": "non disponible")}
                       </span>
                     </div>
                     <div className="card-body">
@@ -300,14 +300,14 @@ export default Voitures;
 
 export function Footer() {
   return (
-    <footer className="bg-light py-5">
+    <footer className="bg-light py-3 px-5 mx-auto ">
       <section className="container d-inline" id="about" >
-        <div className="row text-center text-md-start ms-5">
+        <div className="row text-center text-md-start">
           {/* About Us */}
           <div className="col-md-4 mb-4 mb-md-0">
             <h5 className="text-primary fw-bold mb-3">About Us</h5>
             <p className="text-muted">
-              CarRental provides high-quality car rental services.
+               high-quality car rental services.
             </p>
           </div>
 

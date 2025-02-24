@@ -3,20 +3,20 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
-
-export default function AjouterContrats({ voitures, c ,setContrats}) {
+export default function AjouterContrats({ voitures, c, setContrats }) {
     const [found, setFound] = useState(false);
     const [cin, setCin] = useState("");
     const [client, setClient] = useState([]);
     const [error, setError] = useState(false);
-    const [dateStart, setDateStart] = useState("");
+    const newDate = new Date().toISOString().split('T')[0];  
+    const [dateStart, setDateStart] = useState(newDate||"");
     const [dateEnd, setDateEnd] = useState("");
     const [prix, setPrix] = useState("");
     const [selectedVehicleId, setSelectedVehicleId] = useState("");
     const navigate = useNavigate();
 
     const foundClient = c.find(client => client.cin === cin);
-    
+
     const handleSearch = () => {
         if (foundClient) {
             setClient(foundClient);
@@ -39,19 +39,25 @@ export default function AjouterContrats({ voitures, c ,setContrats}) {
                 cancelButtonText: "Cancel"
             }).then((result) => {
                 if (result.isConfirmed) {
-                  const modalElement = document.getElementById("exampleModal");
-                  if (modalElement) {
-                  const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
-                  modal.hide();}
-                  navigate("/clients", { state: { showModal: true } });
+                    navigate("/clients", { state: { showModal: true } });
                 }
             });
         }
     }, [error, navigate]);
-    
-    
 
-    const handleSubmit =  (e) => {
+    const handleVehicleChange = (e) => {
+        const vehicleId = e.target.value;
+        setSelectedVehicleId(vehicleId);
+
+        const selectedCar = voitures.find(v => v.id === vehicleId);
+        if (selectedCar) {
+            setPrix(selectedCar.price);
+        } else {
+            setPrix("");
+        }
+    };
+
+    const handleSubmit = (e) => {
         e.preventDefault();
         const totalPrice = calculateTotalPrice();
         const contractData = {
@@ -64,49 +70,35 @@ export default function AjouterContrats({ voitures, c ,setContrats}) {
             statut: "confirmed"
         };
 
-
-        
         axios.post("http://localhost:8080/contrats", contractData)
-        .then(res => {
-            setContrats(prevContrats => [...prevContrats, res.data]); 
-            
-            const modalElement = document.getElementById("exampleModal");
-            if (modalElement) {
-              const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
-              modal.hide();
-            }
-    
-            setCin(""); 
-            setClient([]);  
-            setFound(false); 
-            setError(false);  
-            setDateStart("");  
-            setDateEnd("");  
-            setPrix("");  
-            setSelectedVehicleId("");  
-    
-            Swal.fire({
-                title: "Success!",
-                text: "Contract has been created",
-                icon: "success",
-                confirmButtonColor: "#198754"
+            .then(res => {
+                setContrats(prevContrats => [...prevContrats, res.data]);
+
+                setCin("");
+                setClient([]);
+                setFound(false);
+                setError(false);
+                setDateStart("");
+                setDateEnd("");
+                setPrix("");
+                setSelectedVehicleId("");
+
+                Swal.fire({
+                    title: "Success!",
+                    text: "Contract has been created",
+                    icon: "success",
+                    confirmButtonColor: "#198754"
+                });
             });
-        })
-        
-    }
+    };
 
     const calculateTotalPrice = () => {
         if (!dateStart || !dateEnd || !prix) return 0;
-    
         const start = new Date(dateStart);
         const end = new Date(dateEnd);
-        const diffInTime = end - start;
-        const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24)); 
+        const diffInDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24) + 1);
         return diffInDays * parseFloat(prix);
     };
-    
-     
-    
 
     return (
         <div className="container-fluid p-0">
@@ -132,9 +124,7 @@ export default function AjouterContrats({ voitures, c ,setContrats}) {
                     </div>
                 </div>
             </div>
-           
 
-            {/* Client Information */}
             {found && (
                 <div className="alert alert-success py-2 mb-3">
                     <div className="row g-2">
@@ -151,31 +141,31 @@ export default function AjouterContrats({ voitures, c ,setContrats}) {
                 </div>
             )}
 
-            {/* Contract Form */}
             <form onSubmit={handleSubmit} className="needs-validation" noValidate>
                 <div className="row g-3">
                     <div className="col-12">
                         <label className="form-label fw-semibold">Vehicle</label>
                         <select 
                             className="form-select form-select-sm"
-                            onChange={(e) => setSelectedVehicleId(e.target.value)}
+                            onChange={handleVehicleChange}
                             required
                         >
                             <option value="">Select a vehicle</option>
                             {voitures.map((v, i) => (
                                 v.disponible ? 
-                              <option key={i} value={v.id}>
-                                    {v.name} - {v.matricule} - {v.modele}
-                                </option>:""
+                                <option key={i} value={v.id}>
+                                    {v.name} - {v.matricule} - {v.modele} - {v.fuelType} - {v.transmission}
+                                </option> 
+                                : null
                             ))}
                         </select>
                     </div>
-
 
                     <div className="col-6">
                         <label className="form-label fw-semibold">Start Date</label>
                         <input 
                             type="date" 
+                            value={dateStart}
                             className="form-control form-control-sm"
                             onChange={(e) => setDateStart(e.target.value)}
                             required
@@ -199,20 +189,20 @@ export default function AjouterContrats({ voitures, c ,setContrats}) {
                             <input 
                                 type="number" 
                                 className="form-control"
-                                onChange={(e) => setPrix(e.target.value)}
-                                placeholder="Enter monthly price"
+                                value={prix}
+                                onChange={(e) => setPrix(e.target.value)} 
                                 required
                             />
                         </div>
                     </div>
-                    <div className="col-12">
-                    <label className="form-label fw-semibold">Prix Total</label>
-                    <div className="input-group input-group-sm">
-                        <span className="input-group-text form-control form-control-sm" >{calculateTotalPrice()} DH</span>
-                    </div>
-                </div>
 
-                  
+                    <div className="col-12">
+                        <label className="form-label fw-semibold">Prix Total</label>
+                        <div className="input-group input-group-sm">
+                            <span className="input-group-text form-control form-control-sm">{calculateTotalPrice()} DH</span>
+                        </div>
+                    </div>
+
                     <div className="col-12">
                         <button 
                             type="submit" 

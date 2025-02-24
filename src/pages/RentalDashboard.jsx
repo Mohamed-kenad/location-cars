@@ -1,34 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useNavigate } from "react-router-dom";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Dot } from "recharts";
 import RentalStatus from "./Status";
 
 const RentalDashboard = ({ c }) => {
-
-  
+  const navigate = useNavigate();
   const [timeRange, setTimeRange] = useState("last8Month");
   const [monthlyData, setMonthlyData] = useState([]);
 
-  useEffect(() => {
-    setMonthlyData(processMonthlyData(c));
-  }, [c]);
-
   const processMonthlyData = (contracts) => {
-    if (!contracts || contracts.length === 0) return [];
-
+  
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const data = months.map((month) => ({ month, earnings: 0, bookings: 0 }));
-
     contracts.forEach((contract) => {
-      if (contract.statut === "confirmed") {
       const date = new Date(contract.datedebut);
-      const monthIndex = date.getMonth();
-      data[monthIndex].earnings += contract.total;
-      data[monthIndex].bookings += 1;
+      if (contract.statut === "confirmed") {
+        const monthIndex = date.getMonth(); 
+        if (data[monthIndex]) {
+          data[monthIndex].earnings += contract.total || 0; 
+          data[monthIndex].bookings += 1; 
+        }
       }
     });
 
     return data;
   };
+
+ 
+  const handlePointClick = (payload) => {
+
+    const clickedMonth = payload.month;
+    navigate(`/contrats`, { state: { fromRentalDashboard: true, selectedMonth: clickedMonth } });
+  };
+
+  useEffect(() => {
+    setMonthlyData(processMonthlyData(c)); 
+  }, [c]);
 
   return (
     <div className="container-fluid py-4">
@@ -44,7 +51,6 @@ const RentalDashboard = ({ c }) => {
                 onChange={(e) => setTimeRange(e.target.value)}
               >
                 <option value="last8Month">Last 8 Month</option>
-                <option value="thisYear">This Year</option>
               </select>
             </div>
             <div className="card-body">
@@ -54,7 +60,13 @@ const RentalDashboard = ({ c }) => {
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} padding={{ left: 10, right: 10 }} />
                   <YAxis tick={{ fontSize: 12 }} width={60} />
                   <Tooltip />
-                  <Line type="monotone" dataKey="earnings" stroke="#ff4d4f" strokeWidth={2} />
+                  <Line
+                    type="monotone"
+                    dataKey="earnings"
+                    stroke="#ff4d4f"
+                    strokeWidth={2}
+                    dot={<Dot r={5} fill="#ff4d4f" stroke="white" strokeWidth={2} cursor="pointer" onClick={(e) => handlePointClick(e.payload)} />}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>

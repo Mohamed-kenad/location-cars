@@ -9,6 +9,8 @@ const Clients = () => {
   const [selectedClient, setSelectedClient] = useState([]);
   const [modalMode, setModalMode] = useState('add');
   const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);  
+  const [clientsPerPage] = useState(5);  
   const location = useLocation();
   const { state } = location;
 
@@ -102,7 +104,20 @@ const Clients = () => {
   
   
   )
-  
+
+  const indexOfLastClient = currentPage * clientsPerPage;
+  const indexOfFirstClient = indexOfLastClient - clientsPerPage;
+  const currentClients = filterClient.slice(indexOfFirstClient, indexOfLastClient);
+
+  const totalPages = Math.ceil(filterClient.length / clientsPerPage);
+
+  const handlePageChange = (direction) => {
+    if (direction === 'next' && currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    } else if (direction === 'prev' && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <div className="container-fluid min-vh-100 bg-light py-4">
@@ -157,7 +172,7 @@ const Clients = () => {
                 </tr>
               </thead>
               <tbody>
-                {filterClient.map((client) => (
+                {currentClients.map((client) => (
                   <Client 
                   key={client.id}
                     c={client} 
@@ -169,6 +184,36 @@ const Clients = () => {
             </table>
           </div>
         </div>
+      </div>
+        {/* Pagination Controls */}
+        <div className="d-flex justify-content-center my-3">
+        <nav>
+          <ul className="pagination">
+            <li className="page-item">
+              <button
+                className="page-link"
+                onClick={() => handlePageChange('prev')}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+            </li>
+            <li className="page-item">
+              <button className="page-link">
+                {currentPage} / {totalPages}
+              </button>
+            </li>
+            <li className="page-item">
+              <button
+                className="page-link"
+                onClick={() => handlePageChange('next')}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
 
       {/* Client Modal */}
