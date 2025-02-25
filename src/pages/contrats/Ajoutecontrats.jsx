@@ -3,7 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
-export default function AjouterContrats({ voitures, c, setContrats }) {
+export default function AjouterContrats({ voitures, c, setContrats ,closeContractModal}) {
     const [found, setFound] = useState(false);
     const [cin, setCin] = useState("");
     const [client, setClient] = useState([]);
@@ -39,7 +39,10 @@ export default function AjouterContrats({ voitures, c, setContrats }) {
                 cancelButtonText: "Cancel"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    navigate("/clients", { state: { showModal: true } });
+                    closeContractModal(); 
+                    navigate("/clients", { state: { showModal: true } }); 
+                  
+                
                 }
             });
         }

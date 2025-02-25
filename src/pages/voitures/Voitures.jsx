@@ -295,48 +295,49 @@ export default Voitures;
 
 
 
-
-
-
 export function Footer() {
   return (
-    <footer className="bg-light py-3 px-5 mx-auto ">
-      <section className="container d-inline" id="about" >
+    <footer className="bg-light text-dark py-5 px-4">
+      <section className="container d-inline " id='about'>
         <div className="row text-center text-md-start">
-          {/* About Us */}
-          <div className="col-md-4 mb-4 mb-md-0">
+          
+          <div className="col-md-4 mb-4">
             <h5 className="text-primary fw-bold mb-3">About Us</h5>
             <p className="text-muted">
-               high-quality car rental services.
+              We offer high-quality car rental services with a focus on customer satisfaction. Explore our fleet today!
             </p>
           </div>
 
-          <div className="col-md-4 mb-4 mb-md-0">
+          {/* Quick Links */}
+          <div className="col-md-4 mb-4">
             <h5 className="text-primary fw-bold mb-3">Quick Links</h5>
             <ul className="list-unstyled">
-              <li>
-                <a href="/terms" className="text-muted text-decoration-none">
-                  Terms of Service
-                </a>
-              </li>
-              <li>
-                <a href="/privacy" className="text-muted text-decoration-none">
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a href="/cancellation" className="text-muted text-decoration-none">
-                  Cancellation Policy
-                </a>
-              </li>
+              <li><a href="/terms" className="text-muted text-decoration-none hover:text-primary">Terms of Service Privacy PolicyCancellation Policy</a></li>
+              <li><a href="/privacy" className="text-muted text-decoration-none hover:text-primary">Privacy Policy</a></li>
+              <li><a href="/cancellation" className="text-muted text-decoration-none hover:text-primary">Cancellation Policy</a></li>
             </ul>
           </div>
 
           {/* Contact Us */}
-          <div className="col-md-4 mb-4 mb-md-0">
+          <div className="col-md-4 mb-4">
             <h5 className="text-primary fw-bold mb-3">Contact Us</h5>
-            <p className="text-muted mb-1">Email: <a href="mailto:support@carrental.com" className="text-decoration-none">support@carrental.com</a></p>
-            <p className="text-muted">Phone: <a href="tel:+15551234567" className="text-decoration-none">+1 (555) 123-4567</a></p>
+            <p className="text-muted mb-1">
+              Email: <a href="mailto:support@carrental.com" className="text-decoration-none text-muted hover:text-primary">support@carrental.com</a>
+            </p>
+            <p className="text-muted">
+              Phone: <a href="tel:+15551234567" className="text-decoration-none text-muted hover:text-primary">+1 (555) 123-4567</a>
+            </p>
+
+            {/* WhatsApp Contact */}
+            <a
+              href="https://wa.me/212640240753"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-success d-flex align-items-center justify-content-center mt-3 px-4 py-2"
+              style={{ borderRadius: "30px" }}
+            >
+              <i className="bi bi-whatsapp fs-4 me-2"></i> Chat on WhatsApp
+            </a>
           </div>
         </div>
 
@@ -348,4 +349,3 @@ export function Footer() {
     </footer>
   );
 }
-

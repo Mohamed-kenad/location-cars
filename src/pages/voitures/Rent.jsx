@@ -3,23 +3,25 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios'; 
 import { Footer } from './Voitures';
 import Swal from 'sweetalert2';
+import { jsPDF } from "jspdf";
 
 const BookingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const car = location.state?.rent;
   const initialDate = location.state?.date;
-
+  
   const now = new Date();
   now.setDate(now.getDate() + initialDate);  
   const newDate = now.toISOString().split('T')[0];  
   console.log(now)
   console.log("Initial Date:", newDate);
-
-
+  
+  
   const [startDate, setStartDate] = useState(newDate || "");  
   const [endDate, setEndDate] = useState("");
-
+  
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,7 +60,7 @@ const BookingPage = () => {
     const end = new Date(endDate);
     const diffDays = Math.ceil(((end - start) / (1000 * 60 * 60 * 24)) + 1);
     const totalPrice = diffDays * car.price;
-  
+    
     try {
       let clientId = loggedInUser.id;
   
@@ -98,16 +100,39 @@ const BookingPage = () => {
       };
   
       await axios.post("http://localhost:8080/contrats",booking);
+
+      await generatePDF({ car, startDate, endDate, totalPrice });
   
-      Swal.fire("Ajouté!", "Your reservation has been successfully confirmed!", "success");
-      navigate("/tracking");
-  
+      Swal.fire("Ajouté!", "Your reservation has been successfully confirmed!", "success").then((result) => {
+        if (result.isConfirmed) {
+          navigate("/tracking");
+        }
+      });
   
     } catch (error) {
       console.error("Error:", error);
       Swal.fire("Error", "An error occurred while processing your booking. Please try again.", "error");
     }
   };
+
+  const generatePDF = ({ car, startDate, endDate, totalPrice }) => {
+    return new Promise((resolve, reject) => {
+      try {
+        const doc = new jsPDF();
+  
+        doc.text(`Car Model: ${car.model}`, 10, 10);
+        doc.text(`Start Date: ${startDate}`, 10, 20);
+        doc.text(`End Date: ${endDate}`, 10, 30);
+        doc.text(`Total Price: $${totalPrice}`, 10, 40);
+  
+        doc.save("reservation_details.pdf"); 
+        resolve();
+      } catch (error) {
+        reject("Error generating PDF: " + error);
+      }
+    });
+  };
+
   
   
 

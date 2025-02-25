@@ -55,7 +55,7 @@ const RentalDashboard = ({ c }) => {
             </div>
             <div className="card-body">
               <ResponsiveContainer height={300}>
-                <LineChart data={monthlyData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                <LineChart data={monthlyData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }} >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} padding={{ left: 10, right: 10 }} />
                   <YAxis tick={{ fontSize: 12 }} width={60} />

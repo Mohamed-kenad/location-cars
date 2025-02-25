@@ -14,6 +14,22 @@ const Clients = () => {
   const location = useLocation();
   const { state } = location;
 
+  const hideModal = () => {
+    const modalElement = document.getElementById("clientModal");
+    if (modalElement) {
+      const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
+      modal.hide();
+    }
+  };
+
+  const showModal = () => {
+    const modalElement = document.getElementById("clientModal");
+    if (modalElement) {
+      const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
+      modal.show();
+    }
+  };
+
   useEffect(() => {
     axios.get("http://localhost:8080/client")
       .then((res) => { setClients(res.data) });
@@ -62,13 +78,7 @@ const Clients = () => {
     showModal();
   };
 
-  const showModal = () => {
-    const modalElement = document.getElementById("clientModal");
-    if (modalElement) {
-      const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
-      modal.show();
-    }
-  };
+
 
  
   const handleSubmit = () => {
@@ -89,13 +99,7 @@ const Clients = () => {
     }
   };
 
-  const hideModal = () => {
-    const modalElement = document.getElementById("clientModal");
-    if (modalElement) {
-      const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
-      modal.hide();
-    }
-  };
+
 
   const filterClient= clients.filter((c)=>
     c.firstName.toLowerCase().includes(search.toLowerCase()) ||
