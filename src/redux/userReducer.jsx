@@ -4,10 +4,10 @@ const initialState = {
   
   const userReducer = (state = initialState, action) => {
     switch (action.type) {
-      case "LOGIN":
-        localStorage.setItem("user", JSON.stringify(action.payload));
-        return { ...state, user: action.payload };
-  
+    case "LOGIN":
+        const { password, ...userWithoutPassword } = action.payload;
+        localStorage.setItem("user", JSON.stringify(userWithoutPassword));
+         return { ...state, user: userWithoutPassword };
       case "LOGOUT":
         localStorage.removeItem("user");
         return { ...state, user: null };

@@ -14,6 +14,7 @@ export default function AjouterContrats({ voitures, c, setContrats ,closeContrac
     const [prix, setPrix] = useState("");
     const [selectedVehicleId, setSelectedVehicleId] = useState("");
     const navigate = useNavigate();
+    
 
     const foundClient = c.find(client => client.cin === cin);
 

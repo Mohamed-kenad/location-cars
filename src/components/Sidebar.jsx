@@ -15,9 +15,15 @@ export default function Sidebar() {
   const dispatch = useDispatch();
   
   useEffect(()=>{
-    
-     axios.get("http://localhost:8080/contrats?statut=pending")
-     .then((res)=>setNum(res.data.length) )
+    const fetchContrats = async () => {
+      try {
+         await axios.get("http://localhost:8080/contrats?statut=pending")
+     .then((res)=>setNum(res.data.length) )}
+      catch (error) {
+        console.log(error);
+      }
+    }
+    fetchContrats()
   },[])
 
 
@@ -84,14 +90,18 @@ export default function Sidebar() {
           <span>Voitures</span>
         </Link>
         <Link className={getNavLinkClass("/contrats")} to="/contrats">
-          <i className="bi bi-clipboard2-check-fill">
-          {num!==0?<strong className="badge bg-danger position-absolute translate-middle rounded-circle">{num}</strong>:""}
-          </i>
-          <span>Contrats</span>
+          <i className="bi bi-clipboard2-check-fill"></i>
+        <span>Contrats</span>
         </Link>
         <Link className={getNavLinkClass("/clients")} to="/clients">
           <i className="bi bi-person-fill"></i>
           <span>Clients</span>
+        </Link>
+        <Link className={getNavLinkClass("/demandes")} to="/demandes">
+          <i className="bi bi-bell-fill fs-3 ">
+          {num!==0?<strong className="badge bg-danger position-absolute translate-middle rounded-circle">{num}</strong>:""}
+          </i>
+          <span>demandes</span>
         </Link>
       </div>
 

@@ -46,7 +46,7 @@ const CarDetails = () => {
   
   if (!car) {
     return (
-      <div className="text-center py-5">
+      <div className="text-center py-5 my-5">
         <span className="spinner-border text-primary" role="status"></span>
         <p>Loading...</p>
       </div>
@@ -56,6 +56,7 @@ const CarDetails = () => {
 
   return (
     <>
+    <div className="d-flex flex-column min-vh-100">
       <div style={{ paddingTop: '50px' }} className="container d-inline">
         <button className="btn btn-outline-primary mb-4" onClick={() => navigate(-1)}>
           <i className="bi bi-arrow-left"></i> Back
@@ -146,8 +147,10 @@ const CarDetails = () => {
             </Link>
           </div>
         </div>
+        </div>
       <Footer />
       </div>
+
 
     </>
   );

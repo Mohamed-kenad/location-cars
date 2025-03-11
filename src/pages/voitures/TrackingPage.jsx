@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Footer } from './Voitures';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
 const TrackingPage = () => {
   const navigate = useNavigate();
-  const [reservations, setReservations] = useState([]);
   const [cars, setCars] = useState([]);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
+  const location = useLocation(); 
+  const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
     const fetchReservations = async () => {
@@ -36,7 +37,19 @@ const TrackingPage = () => {
         const today = new Date();
         const filteredReservations = response.data.filter((c) =>c.clientId === loggedInUser.id &&
         ["pending", "confirmed", "canceled"].includes(c.statut) && new Date(c.datefin) >= today );
-        setReservations(filteredReservations);
+
+        
+          const contractId = location.state?.id;
+          console.log("Received contract id:", contractId);
+          if (contractId) {
+            const contractToShow = filteredReservations.filter(
+              (c) =>  c.id.toString() === contractId.toString()
+            );
+            setReservations(contractToShow);
+            console.log(contractToShow);
+          } else {
+            setReservations(filteredReservations);
+          }
 
         const carsResponse = await axios.get(`http://localhost:8080/voitures`);
         
@@ -65,7 +78,7 @@ const TrackingPage = () => {
           <h1 className="fs-2 fw-bold text-dark">Track Your Rentals</h1>
           <button
             className="btn btn-outline-dark rounded-pill px-4"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/")}
           >
             <i className="bi bi-arrow-left me-2"></i>Back
           </button>

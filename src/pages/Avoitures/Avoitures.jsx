@@ -8,6 +8,8 @@ export default function Avoitures() {
   const [selectVoiture, setSelectVoiture] = useState({});
   const [modalMode, setModalMode] = useState("add");
   const [filterAvailable, setFilterAvailable] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // Number of items per page
 
   useEffect(() => {
     axios.get("http://localhost:8080/voitures")
@@ -84,7 +86,6 @@ export default function Avoitures() {
     }
   };
 
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -104,11 +105,25 @@ export default function Avoitures() {
     }
   };
 
-  
-
   const filteredVoitures = voitures.filter((v) => 
     filterAvailable === 'all' || (filterAvailable === 'Disponible' && v.disponible) || (filterAvailable === 'Non disponible' && !v.disponible)
   );
+
+  // Paginate the filtered vehicles
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentVoitures = filteredVoitures.slice(indexOfFirst, indexOfLast);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredVoitures.length / itemsPerPage);
+
+  const handlePageChange = (direction) => {
+    if (direction === 'next' && currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    } else if (direction === 'prev' && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <div className="container-fluid min-vh-100 bg-light py-4">
@@ -154,11 +169,40 @@ export default function Avoitures() {
                 </tr>
               </thead>
               <tbody>
-                {filteredVoitures.map((v) => (
+                {currentVoitures.map((v) => (
                   <Avoiture key={v.id} v={v} openEditModal={openEditModal} deletev={deletev} />
                 ))}
               </tbody>
             </table>
+            <div className="d-flex justify-content-center my-3">
+              <nav>
+                <ul className="pagination">
+                  <li className="page-item">
+                    <button
+                      className="page-link"
+                      onClick={() => handlePageChange('prev')}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </button>
+                  </li>
+                  <li className="page-item">
+                    <button className="page-link">
+                      {currentPage} / {totalPages}
+                    </button>
+                  </li>
+                  <li className="page-item">
+                    <button
+                      className="page-link"
+                      onClick={() => handlePageChange('next')}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
           </div>
         </div>
       </div>
@@ -213,7 +257,6 @@ export default function Avoitures() {
                     />
                   </div>
 
-                 
                   <div className="col-12">
                     <label className="form-label small fw-semibold">Image</label>
                     <input 
